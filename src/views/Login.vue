@@ -16,27 +16,41 @@
 
     
     </v-list-item>
-           <v-col
+    <v-form 
+    v-model="validfrom"
+    ref="form"
+    >
+             <v-col
           cols="12"
           >
           <v-text-field
             label="نام کاربری یا ایمیل"
             outlined
             dense
+            required
+            :rules ="req"
           ></v-text-field>
           <v-text-field
             outlined
+            required
             :type ="showPassword ? 'text' : 'password' "
             label="رمز عبور"
             :prepend-inner-icon="showPassword?'mdi-eye' : 'mdi-eye-off'"
             @click:prepend-inner="showPassword = !showPassword"
+            :rules ="req"
+
           ></v-text-field>
         </v-col>
+    </v-form>
+   
 
     <v-card-actions>
        <v-btn
       depressed
       color="primary"
+      :loading ="loading"
+      :disabled="disabledBtn"
+       @click="validate"
     >
       ورود
     </v-btn>
@@ -51,12 +65,43 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+
 export default {
 
   data : () =>({
     showPassword : false ,
-  })
+    validfrom: true,
+     req: [
+        v => !!v || 'پر کردن این فیلد الزامی است ',
+      ],
+    
+     loading : false
+  }),
+  computed: {
+    disabledBtn() {
+      return this.loading || !this.validfrom
+    }
+  },
+
+  methods : {
+
+     validate () {
+        
+        if(this.$refs.form.validate())
+        {
+          this.loading = true 
+          setTimeout( ()=>{
+       
+          this.loading = false 
+          this.$router.push({ name: "Dashboard" })
+
+            }, 2000 )
+        }
+      },
+
+
+  },
+
 
 // setup(props) {
 
