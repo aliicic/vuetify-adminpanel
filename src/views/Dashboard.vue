@@ -68,19 +68,29 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
+         <router-link to="/dashboard">
           <v-list-item>
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
             <v-list-item-title>داشبورد</v-list-item-title>
           </v-list-item>
-
+         </router-link>
           <v-list-item>
             <v-list-item-icon>
               <v-icon>mdi-account</v-icon>
             </v-list-item-icon>
             <v-list-item-title>اطلاعات کاربری</v-list-item-title>
           </v-list-item>
+                 <router-link :to="{ name :'Users'}">
+          <v-list-item>
+   
+            <v-list-item-icon>
+              <v-icon>mdi-user</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>کاربران</v-list-item-title>
+          </v-list-item>
+          </router-link>  
         </v-list-item-group>
       </v-list>
 
@@ -119,5 +129,7 @@
 </script>
 
 <style>
-
+a{
+  text-decoration: none;
+}
 </style>

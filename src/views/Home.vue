@@ -62,6 +62,7 @@
          </v-card>
        </v-col>
      </v-row>
+    <v-divider class="mt-4"/> 
    </v-container>
 </template>
 
@@ -74,5 +75,9 @@
     components: {
 
     },
+
+    created(){
+      console.log({...this.$vuetify.breakpoint});
+    }
   }
 </script>
