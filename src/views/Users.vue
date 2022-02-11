@@ -4,18 +4,24 @@
       کاربران
       <v-spacer></v-spacer>
       <v-text-field
-        v-model="جستجو"
+        v-model="search"
         append-icon="mdi-magnify"
-        label="Search"
-        single-line
+        label="جستجو"
         hide-details
       ></v-text-field>
     </v-card-title>
+
+    <v-card class="mx-5">
+      
     <v-data-table
       :headers="headers"
       :items="desserts"
       :search="search"
     ></v-data-table>
+     
+    </v-card>
+
+
   </v-card>
 </template>
 

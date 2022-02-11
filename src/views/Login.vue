@@ -26,6 +26,7 @@
           <v-text-field
             label="نام کاربری یا ایمیل"
             outlined
+            v-model="form.username"
             dense
             required
             :rules ="req"
@@ -33,6 +34,7 @@
           <v-text-field
             outlined
             required
+            v-model="form.password"
             :type ="showPassword ? 'text' : 'password' "
             label="رمز عبور"
             :prepend-inner-icon="showPassword?'mdi-eye' : 'mdi-eye-off'"
@@ -61,15 +63,35 @@
       فراموشی رمز عبور
     </v-btn>
     </v-card-actions>
+    <v-alert  v-if="errorText && errorText!='success' "
+          color="red"
+          type="error"
+     >
+
+     <p v-html="errorText" />
+     </v-alert>
+    <v-alert  v-if="errorText=='success'"
+          color="green"
+          type="success"
+     >
+
+       خوش اومدی دوست عزیزم 
+     </v-alert>
   </v-card>
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
-
+  
   data : () =>({
     showPassword : false ,
+    errorText : '',
+    form :{
+      username: '',
+      password: ''
+    },
     validfrom: true,
      req: [
         v => !!v || 'پر کردن این فیلد الزامی است ',
@@ -85,15 +107,50 @@ export default {
 
   methods : {
 
-     validate () {
+      validate : async function () {
+
+        const user = this.form.username
+        const pass = this.form.password
+        
+        
         
         if(this.$refs.form.validate())
         {
-          this.loading = true 
-          setTimeout( ()=>{
+           this.loading = true 
+
+        // (async function getdata(){
+         
+         try{
+          
+           console.log(user);
+           const { data } = await axios.post('http://localhost/wp-vue/cms/wp-json/jwt-auth/v1/token',
+          {
+            	"username" : user , 
+	            "password" : pass  
+          }
+          
+           )
+           console.log(data.token);
+           this.loading = false 
+           this.errorText = "success"
+
+         }catch(error){
+            
+            //console.log(error.response.data.message);
+            this.errorText = error.response.data.message
+            this.loading = false 
+
+         }
+
+         
        
+         
+          setTimeout( ()=>{
+
+
+         
           this.loading = false 
-          this.$router.push({ name: "Dashboard" })
+         // this.$router.push({ name: "Dashboard" })
 
             }, 2000 )
         }
