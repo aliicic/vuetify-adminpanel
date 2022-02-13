@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from '../plugins/axios'
 
 export default {
   
@@ -122,21 +122,22 @@ export default {
          
          try{
           
-           console.log(user);
-           const { data } = await axios.post('http://localhost/wp-vue/cms/wp-json/jwt-auth/v1/token',
+           //console.log(user);
+           const { data } = await axios.post('/wp-json/jwt-auth/v1/token',
           {
             	"username" : user , 
 	            "password" : pass  
           }
           
            )
-           console.log(data.token);
+           window.localStorage.setItem("userToken" , data.token)
+           //console.log(data.token);
            this.loading = false 
            this.errorText = "success"
 
          }catch(error){
             
-            //console.log(error.response.data.message);
+            
             this.errorText = error.response.data.message
             this.loading = false 
 
@@ -150,7 +151,7 @@ export default {
 
          
           this.loading = false 
-         // this.$router.push({ name: "Dashboard" })
+          this.$router.push({ name: "Dashboard" })
 
             }, 2000 )
         }
@@ -158,6 +159,7 @@ export default {
 
 
   },
+   
 
 
 // setup(props) {

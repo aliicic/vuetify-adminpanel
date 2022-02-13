@@ -82,21 +82,52 @@
             </v-list-item-icon>
             <v-list-item-title>اطلاعات کاربری</v-list-item-title>
           </v-list-item>
-                 <router-link :to="{ name :'Users'}">
-          <v-list-item>
-   
+          <router-link :to="{ name :'Users'}">
+            <v-list-item>
             <v-list-item-icon>
-              <v-icon>mdi-user</v-icon>
+              <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
             <v-list-item-title>کاربران</v-list-item-title>
-          </v-list-item>
+           </v-list-item>
           </router-link>  
+      <v-list-group
+        :value="false"
+        prepend-icon="mdi-account-circle"
+      >
+        <template v-slot:activator>
+          <v-list-item-title>پست  ها</v-list-item-title>
+        </template>
+          <v-list-item class="mr-5">
+             <v-list-item-icon>
+               <v-icon>mdi-view-dashboard</v-icon>
+             </v-list-item-icon>
+            <v-list-item-title >پست ها</v-list-item-title>
+          </v-list-item>   
+          <v-list-item class="mr-5">
+             <v-list-item-icon>
+               <v-icon>mdi-view-dashboard</v-icon>
+             </v-list-item-icon>
+            <v-list-item-title >پست جدید</v-list-item-title>
+          </v-list-item>   
+          <v-list-item class="mr-5">
+             <v-list-item-icon>
+               <v-icon>mdi-view-dashboard</v-icon>
+             </v-list-item-icon>
+            <v-list-item-title >دسته ها</v-list-item-title>
+          </v-list-item>   
+          <v-list-item class="mr-5">
+             <v-list-item-icon>
+               <v-icon>mdi-view-dashboard</v-icon>
+             </v-list-item-icon>
+            <v-list-item-title >برچسب ها</v-list-item-title>
+          </v-list-item>   
+      </v-list-group>          
         </v-list-item-group>
       </v-list>
 
       <template #append >
         <div class=" mx-4 ">
-        <v-btn block class="mb-2" color="grey darken-4" dark>
+        <v-btn block class="mb-2" color="grey darken-4" dark  @click="deletetoken">
           خروج
         </v-btn>
         </div>
@@ -125,6 +156,22 @@
       drawer: true,
       group: null,
     }),
+
+ methods : {
+
+   deletetoken () {
+
+    localStorage.removeItem('userToken')
+    this.$router.push({ name: "Login" })
+
+   }
+
+ }
+  // beforeRouteEnter(to, from, next) {
+  
+   
+  //   next({ path: '/' })
+  // }
   }
 </script>
 
