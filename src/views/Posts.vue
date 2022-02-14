@@ -26,7 +26,7 @@
                                     <v-text-field v-model="editedItem.last_name" label="نام خانوادگی"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6">
-                                    <v-text-field v-model="editedItem.username" label="نام کاربری"  :disabled="editedIndex !== -1"></v-text-field>
+                                    <v-text-field v-model="editedItem.username" label="نام کاربری" :disabled="editedIndex !== -1"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6">
                                     <v-text-field v-model="editedItem.email" label="آدرس ایمیل"></v-text-field>
@@ -84,7 +84,7 @@
 <script>
 import axios from '../plugins/axios'
 export default {
-    name: 'Users',
+    name: 'Posts',
     data() {
         return {
             dialog: false,
@@ -97,19 +97,19 @@ export default {
                     text: 'نام',
                     align: 'start',
                     sortable: false,
-                    value: 'name',
+                    value: 'title.raw',
                 },
                 {
-                    text: 'نام کاربری',
-                    value: 'username'
+                    text: 'نام نویسنده',
+                    value: 'uagb_author_info.display_name'
                 },
                 {
-                    text: 'ایمیل',
-                    value: 'email'
+                    text: 'وضعیت',
+                    value: 'status'
                 },
                 {
-                    text: 'نقش',
-                    value: 'roles'
+                    text: 'تاریخ',
+                    value: 'date'
                 },
                 {
                     text: 'عملیات',
@@ -145,7 +145,7 @@ export default {
 
                 const {
                     data
-                } = await axios.get('/wp-json/wp/v2/users', {
+                } = await axios.get('/wp-json/wp/v2/posts', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                     },
