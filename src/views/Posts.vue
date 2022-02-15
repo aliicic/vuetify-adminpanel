@@ -273,7 +273,7 @@ export default {
             this.close()
         },
         currentDateTime(item) {
-            return moment('2022-02-13T15:19:33').locale('fa').format('YYYY/M/D');
+            return moment(item).locale('fa').format(' h:mm:ss a , YYYY/M/D');
         }
 
     },
