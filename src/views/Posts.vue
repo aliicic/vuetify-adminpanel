@@ -1,15 +1,23 @@
 <template>
 <v-data-table :headers="headers" :items="usersInfoList" sort-by="calories" class="elevation-1" :loading="loading" loading-text="لطفا منتظر بمانید">
+    <template v-slot:item.date="{ item }">
+
+        {{ currentDateTime(item.date) }}
+
+    </template>
     <template v-slot:top>
         <v-toolbar flat>
-            <v-toolbar-title>کاربران</v-toolbar-title>
+            <v-toolbar-title>{{currentDateTime()}}</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="500px">
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                        اضافه کردن کاربر جدید
-                    </v-btn>
+                    <router-link to="/dashboard/createpost">
+                        <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+                            اضافه کردن پست جدید
+                        </v-btn>
+                    </router-link>
+
                 </template>
                 <v-card>
                     <v-card-title>
@@ -73,16 +81,13 @@
             mdi-delete
         </v-icon>
     </template>
-    <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">
-            Reset
-        </v-btn>
-    </template>
 </v-data-table>
 </template>
 
 <script>
 import axios from '../plugins/axios'
+//import moment from 'moment'
+var moment = require('jalali-moment')
 export default {
     name: 'Posts',
     data() {
@@ -121,13 +126,13 @@ export default {
             editedItem: {
                 name: '',
                 slug: '',
-                first_name :'',
-                last_name : '',
-                nickname : '',
-                email : '',
-                roles : '',
-                password :'',
-                username :'',
+                first_name: '',
+                last_name: '',
+                nickname: '',
+                email: '',
+                roles: '',
+                password: '',
+                username: '',
 
             },
             defaultItem: {
@@ -150,7 +155,9 @@ export default {
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                     },
                     params: {
-                        'context': 'edit'
+                        'context': 'edit',
+                        'status': 'any',
+
                     }
                 })
                 this.usersInfoList.push(...data)
@@ -220,13 +227,12 @@ export default {
         },
         save: async function () {
             if (this.editedIndex > -1) {
-               
+
                 try {
 
                     const {
                         data
-                    } = await axios.put(`/wp-json/wp/v2/users/${this.usersInfoList[this.editedIndex].id}`,  this.editedItem ,
-                        {
+                    } = await axios.put(`/wp-json/wp/v2/users/${this.usersInfoList[this.editedIndex].id}`, this.editedItem, {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                             }
@@ -236,7 +242,7 @@ export default {
                     )
 
                     console.log(data);
-                  //  this.$refs.form.reset()
+                    //  this.$refs.form.reset()
                     Object.assign(this.usersInfoList[this.editedIndex], this.editedItem)
                 } catch (e) {
 
@@ -248,7 +254,7 @@ export default {
                     const {
                         data
                     } = await axios.post('/wp-json/wp/v2/users',
-                         this.editedItem , {
+                        this.editedItem, {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                             }
@@ -259,19 +265,23 @@ export default {
 
                     console.log(data);
                     //this.$refs.form.reset()
-                     this.usersInfoList.push(this.editedItem)
+                    this.usersInfoList.push(this.editedItem)
                 } catch (e) {
 
                 }
             }
             this.close()
         },
+        currentDateTime(item) {
+            return moment('2022-02-13T15:19:33').locale('fa').format('YYYY/M/D');
+        }
 
     },
     computed: {
         formTitle() {
             return this.editedIndex === -1 ? 'اضافه کردن کاربر جدید' : 'ویرایش اطلاعات کاربر'
         },
+
     },
     watch: {
         dialog(val) {
@@ -284,6 +294,8 @@ export default {
     created() {
         this.getUsers();
         //this.initialize()
+        console.log(new Date(2022, 2, 21));
+        console.log(new Intl.DateTimeFormat('fa-IR').format(new Date(2022, 2, 21)));
     },
 }
 </script>
