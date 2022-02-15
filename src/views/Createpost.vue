@@ -2,7 +2,7 @@
 <v-container>
     <v-row>
         <v-col cols="12" md="9">
-            <v-card class="ma-10 pa-5 ml-md-0">
+            <v-card class="ma-10 pa-5 ml-md-0" :loading="loading">
                 <v-form ref="form" v-model="valid" lazy-validation>
                     <v-text-field v-model="postContent.title" :counter="10" :rules="nameRules" label="عنوان پست" required></v-text-field>
                     <v-textarea solo name="input-7-4" label="متن پست" v-model="postContent.content"></v-textarea>
@@ -33,7 +33,8 @@ import axios from '../plugins/axios'
 export default {
     data: () => ({
         valid: true,
-
+        thisIsNewPost : true ,
+        loading : false ,
         nameRules: [
             v => !!v || 'Name is required',
             v => (v && v.length <= 10) || 'Name must be less than 10 characters',
@@ -47,6 +48,14 @@ export default {
 
     }),
 
+    // computed:{
+       
+    //    thisIsEditPost(){
+    //        return  this.$route.params.id === "" ? true : false
+    //    }
+
+    // },
+    
     methods: {
         async publish() {
             this.$refs.form.validate()
@@ -69,10 +78,41 @@ export default {
             }
 
         },
+        async getPostDetails() {
+  
+            try {
+
+                const { data } = await axios.get(`/wp-json/wp/v2/posts/${this.$route.params.id}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                        }
+
+                    }
+
+                )
+
+             console.log(data);
+            this.postContent.title =  data.title.rendered     
+            this.postContent.contnet =  data.content.rendered     
+            this.loading = false
+            } catch (e) {
+                  console.log(e);
+            }
+
+        },
         reset() {
          this.$refs.form.reset()
         },
     },
+    created() {
+       // console.log(this.$route.params.id);
+        
+        if(this.$route.params.id){ 
+           this.loading = true,          
+           this.getPostDetails() 
+        }
+    }
 }
 </script>
 

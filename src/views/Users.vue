@@ -73,6 +73,9 @@
             mdi-delete
         </v-icon>
     </template>
+    <template v-slot:item.email="{ item }">
+        {{ item.email }}
+    </template>
     <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">
             Reset

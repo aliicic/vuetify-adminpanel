@@ -5,6 +5,13 @@
         {{ currentDateTime(item.date) }}
 
     </template>
+    <template v-slot:item.tags="{ item }">    
+    <v-chip v-for="i in getTheTags(item)" :key="i">
+        <!-- <router-link :to="{ name : i.id }"> -->
+        {{ i.name }}
+        <!-- </router-link> -->
+        </v-chip>
+    </template>
     <template v-slot:top>
         <v-toolbar flat>
             <v-toolbar-title>{{currentDateTime()}}</v-toolbar-title>
@@ -19,46 +26,6 @@
                     </router-link>
 
                 </template>
-                <v-card>
-                    <v-card-title>
-                        <span class="text-h5">{{ formTitle }}</span>
-                    </v-card-title>
-
-                    <v-card-text>
-                        <v-container>
-                            <v-row>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field v-model="editedItem.name" label="نام"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field v-model="editedItem.last_name" label="نام خانوادگی"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field v-model="editedItem.username" label="نام کاربری" :disabled="editedIndex !== -1"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field v-model="editedItem.email" label="آدرس ایمیل"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field v-model="editedItem.nickname" label="نام نمایشی"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field v-model="editedItem.password" type="password" label="پسورد"></v-text-field>
-                                </v-col>
-                            </v-row>
-                        </v-container>
-                    </v-card-text>
-
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="close">
-                            بیخیال
-                        </v-btn>
-                        <v-btn color="blue darken-1" text @click="save">
-                            ذخیره
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
             </v-dialog>
             <v-dialog v-model="dialogDelete" max-width="500px">
                 <v-card>
@@ -74,9 +41,12 @@
         </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-        </v-icon>
+        <router-link :to="{ name : 'CreatePost' , params : {id  : item.id} }">
+            <v-icon small class="mr-2" @click="editItem(item)">
+                mdi-pencil
+            </v-icon>
+        </router-link>
+
         <v-icon small @click="deleteItem(item)">
             mdi-delete
         </v-icon>
@@ -86,7 +56,6 @@
 
 <script>
 import axios from '../plugins/axios'
-//import moment from 'moment'
 var moment = require('jalali-moment')
 export default {
     name: 'Posts',
@@ -95,8 +64,8 @@ export default {
             dialog: false,
             dialogDelete: false,
             search: '',
-            editedIndex: '',
             loading: true,
+            the_tags : '',
 
             headers: [{
                     text: 'نام',
@@ -111,6 +80,10 @@ export default {
                 {
                     text: 'وضعیت',
                     value: 'status'
+                },
+                {
+                    text: 'برچسب ها',
+                    value: 'tags'
                 },
                 {
                     text: 'تاریخ',
@@ -161,31 +134,12 @@ export default {
                     }
                 })
                 this.usersInfoList.push(...data)
-                console.log(data, 'is user informations');
+                console.log(data[0].tags, 'is post informations');
                 this.loading = false
             } catch (e) {
                 console.log('we have some errors');
             }
 
-        },
-
-        editItem: async function (item) {
-
-            this.editedIndex = this.usersInfoList.indexOf(item)
-            const {
-                data
-            } = await axios.get(`/wp-json/wp/v2/users/${this.usersInfoList[this.editedIndex].id}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                },
-                params: {
-                    'context': 'edit'
-                }
-            })
-            this.editedItem = Object.assign({}, data)
-            console.log(data);
-            //this.editedItem.push(...data)
-            this.dialog = true
         },
 
         deleteItem(item) {
@@ -198,13 +152,12 @@ export default {
 
         deleteItemConfirm() {
 
-            axios.delete(`/wp-json/wp/v2/users/${this.usersInfoList[this.editedIndex].id}`, {
+            axios.delete(`/wp-json/wp/v2/posts/${this.usersInfoList[this.editedIndex].id}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                 },
                 params: {
-                    'force': true,
-                    'reassign': 1
+                    'context': 'edit'
                 }
             })
             this.usersInfoList.splice(this.editedIndex, 1)
@@ -225,56 +178,34 @@ export default {
                 this.editedIndex = -1
             })
         },
-        save: async function () {
-            if (this.editedIndex > -1) {
-
-                try {
-
-                    const {
-                        data
-                    } = await axios.put(`/wp-json/wp/v2/users/${this.usersInfoList[this.editedIndex].id}`, this.editedItem, {
-                            headers: {
-                                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                            }
-
-                        }
-
-                    )
-
-                    console.log(data);
-                    //  this.$refs.form.reset()
-                    Object.assign(this.usersInfoList[this.editedIndex], this.editedItem)
-                } catch (e) {
-
-                }
-            } else {
-                // this.desserts.push(this.editedItem)
-                try {
-
-                    const {
-                        data
-                    } = await axios.post('/wp-json/wp/v2/users',
-                        this.editedItem, {
-                            headers: {
-                                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                            }
-
-                        }
-
-                    )
-
-                    console.log(data);
-                    //this.$refs.form.reset()
-                    this.usersInfoList.push(this.editedItem)
-                } catch (e) {
-
-                }
-            }
-            this.close()
-        },
         currentDateTime(item) {
             return moment(item).locale('fa').format(' h:mm:ss a , YYYY/M/D');
-        }
+        },
+        getTags: async function () {
+
+            try {
+
+                const {
+                    data
+                } = await axios.get('/wp-json/wp/v2/tags')
+              
+              this.the_tags = data
+
+            } catch (e) {
+
+            }
+
+        },
+        getTheTags(itemm) {
+
+          return itemm.tags.map(item => {
+                let tagId = item
+                var foundTag = this.the_tags.find(tag => tag.id === tagId )
+                console.log(foundTag , 'this is me');
+                return foundTag  ? foundTag : ''
+            } )
+
+        },
 
     },
     computed: {
@@ -293,6 +224,7 @@ export default {
     },
     created() {
         this.getUsers();
+        this.getTags();
         //this.initialize()
         console.log(new Date(2022, 2, 21));
         console.log(new Intl.DateTimeFormat('fa-IR').format(new Date(2022, 2, 21)));
