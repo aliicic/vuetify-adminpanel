@@ -6,7 +6,7 @@
                 <v-form ref="form" v-model="valid" lazy-validation>
                     <v-text-field v-model="postContent.title" :counter="10" :rules="nameRules" label="عنوان پست" required></v-text-field>
                     <!-- <v-textarea solo name="input-7-4" label="متن پست" v-model="postContent.content.raw"></v-textarea> -->
-                    <tiptap :value="postContent.content" />
+                    <tiptap v-model="postContent.content" />
                     <v-btn :disabled="!valid" color="success" class="mr-4" @click="publish">
                         انتشار پست
                     </v-btn>
