@@ -1,5 +1,5 @@
 <template>
-<div>
+<div v-if="editor">
     <button @click.prevent="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
         bold
     </button>
@@ -85,7 +85,8 @@
 <script>
 import {
     Editor,
-    EditorContent
+    EditorContent,
+    isActive
 } from '@tiptap/vue-2'
 import StarterKit from '@tiptap/starter-kit'
 import Document from '@tiptap/extension-document'
@@ -129,10 +130,11 @@ export default {
             content: this.value,
             extensions: [
                 StarterKit,
-                Document,
-                Paragraph,
-                Text,
-                Heading,
+                //Document,
+                //Paragraph,
+                //Text,
+                isActive,
+                //Heading,
                 TextAlign.configure({
                     types: ['heading', 'paragraph'],
                 }),
@@ -146,6 +148,8 @@ export default {
                 // this.$emit('input', this.editor.getJSON())
             },
         })
+
+      
     },
 
     beforeUnmount() {

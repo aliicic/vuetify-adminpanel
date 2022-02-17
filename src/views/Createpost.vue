@@ -30,7 +30,9 @@
                 <p>وضعیت پست</p>
                 <v-card class="ma-10 pa-5 mx-0 justify-center d-flex ">
                     <p>برچسب ها</p>
-                    <v-combobox v-model="select" :items="items" label="I use chips" multiple chips></v-combobox>
+                    <v-combobox v-model="select" :items="items" label="I use chips" multiple chips>
+
+                    </v-combobox>
                 </v-card>
             </v-card>
         </v-col>
@@ -60,7 +62,8 @@ export default {
         select: [],
         items: [],
         itemsId: [],
-        the_tags: [10, 11, 12],
+        the_tags: [],
+        obitem :[],
         postContent: {
             title: '',
             content: '',
@@ -115,11 +118,11 @@ export default {
                         'context': 'edit'
                     }
                 })
-                this.items.push(...data.map(data => data.name))
-                this.itemsId.push(...data.map(data => data.id))
 
-                //this.items = data.map(data => data.name)
-                //console.log(data.map(data => data.name), 'is tags informations');
+                this.itemsId.push(...data.map(data => data.id))
+                this.obitem  = data
+                console.log(this.obitem  , 'new object');
+                this.items = data.map(data => data.name)
 
             } catch (e) {
                 console.log('we have some errors');
@@ -147,8 +150,11 @@ export default {
                 this.postContent.title = data.title.rendered
                 this.postContent.content = data.content.rendered
                 this.postContent.status = data.status
-                // this.the_tags = data.tags
-                //console.log(this.the_tags , 'is the tags');
+                //this.select = data.tags
+                const x = this.obitem
+                // console.log(x,'is x');
+                //this.select= data.tags.map(function(item){ return x.find( function(itm){ return itm.id === item})}).map(it => it.name)
+                this.select=data.tags.map(item=>x.find(itm=>itm.id ===item)).map(it =>it.name )
                 this.loading = false
             } catch (e) {
                 console.log(e);
@@ -156,29 +162,29 @@ export default {
 
         },
 
-        getTheTags() {
-            console.log(this.the_tags, 'the_tags');
-            console.log(this.itemsId, 'itemsId');
-            console.log(this.the_tags.map(item => this.itemsId.find(itemsIds => itemsIds === item)), 'xxx');
-            this.select = this.the_tags.map(item => this.itemsId.find(itemsIds => itemsIds === item))
-            console.log(this.select, 'is sleceted');
-
-        },
+    //    getTheTags() {
+           
+      
+    //     console.log(this.select.map(item=> item === 12 ),"okay?"); 
+    //     },
 
         reset() {
             this.$refs.form.reset()
             this.postContent.content = ''
         },
     },
-    created() {
+     async created() {
         // console.log(this.$route.params.id);
 
         if (this.$route.params.id) {
             this.loading = true,
                 this.getPostDetails()
+             
         }
-        this.getTheTags()
-        this.getTags()
+         
+            
+              // this.getTheTags()
+              this.getTags()
 
     },
 
