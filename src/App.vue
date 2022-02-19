@@ -10,5 +10,9 @@ export default {
   data: () => ({
     //
   }),
+
+  created(){
+    console.log(this.$store.state.products);
+  }
 };
 </script>

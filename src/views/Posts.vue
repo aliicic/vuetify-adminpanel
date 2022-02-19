@@ -1,5 +1,5 @@
 <template>
-<v-data-table :headers="headers" :items="usersInfoList" sort-by="calories" class="elevation-1" :loading="loading" loading-text="لطفا منتظر بمانید">
+<v-data-table :headers="headers" :items="postInfoList" sort-by="calories" class="elevation-1" :loading="loading" loading-text="لطفا منتظر بمانید">
     <template v-slot:item.date="{ item }">
 
         {{ currentDateTime(item.date) }}
@@ -73,10 +73,8 @@ export default {
             dialog: false,
             dialogDelete: false,
             search: '',
-            loading: true,
-            the_tags: '',
             the_categories: '',
-
+            loading: true,
             headers: [{
                     text: 'نام',
                     align: 'start',
@@ -108,7 +106,6 @@ export default {
                     value: 'actions'
                 },
             ],
-            usersInfoList: [],
             editedIndex: -1,
             editedItem: {
                 name: '',
@@ -129,44 +126,33 @@ export default {
             },
         }
     },
-    methods: {
-
-        getUsers: async function () {
-
-            try {
-
-                const {
-                    data
-                } = await axios.get('/wp-json/wp/v2/posts', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                    },
-                    params: {
-                        'context': 'edit',
-                        'status': 'any',
-
-                    }
-                })
-                this.usersInfoList.push(...data)
-                // console.log(data[0].tags, 'is post informations');
-                this.loading = false
-            } catch (e) {
-                console.log('we have some errors');
-            }
-
+    computed: {
+        formTitle() {
+            return this.editedIndex === -1 ? 'اضافه کردن کاربر جدید' : 'ویرایش اطلاعات کاربر'
         },
+        postInfoList() {
+            return this.$store.state.postInfoList
+        },
+        the_tags() {
+            return this.$store.state.the_tags
+        },
+        // loading() {
+        //     return this.$store.state.loading
+        // },
+
+    },
+    methods: {
 
         deleteItem(item) {
             // console.log(item.id);
-            this.editedIndex = this.usersInfoList.indexOf(item)
+            this.editedIndex = this.postInfoList.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
 
         },
-
         deleteItemConfirm() {
 
-            axios.delete(`/wp-json/wp/v2/posts/${this.usersInfoList[this.editedIndex].id}`, {
+            axios.delete(`/wp-json/wp/v2/posts/${this.postInfoList[this.editedIndex].id}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                 },
@@ -174,7 +160,7 @@ export default {
                     'context': 'edit'
                 }
             })
-            this.usersInfoList.splice(this.editedIndex, 1)
+            this.postInfoList.splice(this.editedIndex, 1)
             this.closeDelete()
         },
         close() {
@@ -184,7 +170,6 @@ export default {
                 this.editedIndex = -1
             })
         },
-
         closeDelete() {
             this.dialogDelete = false
             this.$nextTick(() => {
@@ -195,29 +180,8 @@ export default {
         currentDateTime(item) {
             return moment(item).locale('fa').format(' h:mm:ss a , YYYY/M/D');
         },
-        getTags: async function () {
 
-            try {
 
-                const {
-                    data
-                } = await axios.get('/wp-json/wp/v2/tags', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                    },
-                    params: {
-                        'context': 'edit',
-                        'per_page': 100
-                    }
-                })
-
-                this.the_tags = data
-
-            } catch (e) {
-
-            }
-
-        },
         getCategories: async function () {
 
             try {
@@ -241,15 +205,9 @@ export default {
             }
 
         },
-        getTheTags(itemm) {
-
-            return itemm.tags.map(item => {
-                let tagId = item
-                var foundTag = this.the_tags.find(tag => tag.id === tagId)
-                // console.log(foundTag , 'this is me');
-                return foundTag ? foundTag : ''
-            })
-
+        getTheTags(itemm) {        
+        this.$store.dispatch('getTheTags',itemm)
+        return this.$store.state.get_the_tags
         },
         getTheCategories(itemm) {
 
@@ -263,12 +221,7 @@ export default {
         },
 
     },
-    computed: {
-        formTitle() {
-            return this.editedIndex === -1 ? 'اضافه کردن کاربر جدید' : 'ویرایش اطلاعات کاربر'
-        },
 
-    },
     watch: {
         dialog(val) {
             val || this.close()
@@ -278,9 +231,10 @@ export default {
         },
     },
     created() {
-        this.getUsers();
-        this.getTags();
+        this.$store.dispatch('getPosts')
+        this.$store.dispatch('getTags')
         this.getCategories();
+        console.log(this.$store.state.product, 'hey its ');
         //this.initialize()
         // console.log(new Date(2022, 2, 21));
         // console.log(new Intl.DateTimeFormat('fa-IR').format(new Date(2022, 2, 21)));
