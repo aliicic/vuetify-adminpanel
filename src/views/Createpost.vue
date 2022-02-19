@@ -28,7 +28,14 @@
         <v-col cols="12">
             <v-card class="ma-20 pa-5 mx-0 justify-center d-flex ">
                 <p>برچسب ها</p>
-                <v-combobox v-model="select" @input="handle" :items="items" label="I use chips" multiple chips></v-combobox>
+                <v-combobox v-model="selectedTags" @input="handleTags" :items="tagItems" label="I use chips" multiple chips></v-combobox>
+            </v-card>
+
+        </v-col>
+        <v-col cols="12">
+            <v-card class="ma-20 pa-5 mx-0 justify-center d-flex ">
+                <p>دسته بندی ها</p>
+                <v-combobox v-model="selectedCategories" @input="handleCats" :items="categoriesItems" label="I use chips" multiple chips></v-combobox>
             </v-card>
 
         </v-col>
@@ -55,27 +62,26 @@ export default {
             v => (v && v.length <= 10) || 'Name must be less than 10 characters',
         ],
 
-        select: [],
-        items: [],
-        itemsId: [],
+        selectedTags: [],
+        selectedCategories: [],
+        categoriesItems: [],
+        categoriesItemsId: [],
+        categoriesObject: [],
+        tagItems: [],
+        tagsItemsId: [],
         the_tags: [],
-        obitem: [],
+        tagObject: [],
         postContent: {
             title: '',
             content: '',
             status: '',
-            tags: []
+            tags: [],
+            categories: [],
         }
 
     }),
 
-    // computed:{
 
-    //    thisIsEditPost(){
-    //        return  this.$route.params.id === "" ? true : false
-    //    }
-
-    // },
 
     methods: {
         async publish() {
@@ -144,9 +150,34 @@ export default {
                     }
                 })
 
-                this.itemsId.push(...data.map(data => data.id))
-                this.obitem = data
-                this.items = data.map(data => data.name)
+                this.tagsItemsId.push(...data.map(data => data.id))
+                this.tagObject = data
+                this.tagItems = data.map(data => data.name)
+
+            } catch (e) {
+                console.log('we have some errors');
+            }
+
+        },
+        getCategories: async function () {
+
+            try {
+
+                const {
+                    data
+                } = await axios.get('/wp-json/wp/v2/categories', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    },
+                    params: {
+                        'context': 'edit',
+                        'per_page': 100
+                    }
+                })
+
+                this.categoriesItemsId.push(...data.map(data => data.id))
+                this.categoriesObject = data
+                this.categoriesItems = data.map(data => data.name)
 
             } catch (e) {
                 console.log('we have some errors');
@@ -175,11 +206,13 @@ export default {
                 this.postContent.content = data.content.rendered
                 this.postContent.status = data.status
 
-                const x = this.obitem
+                const x = this.tagObject
+                const y = this.categoriesObject
 
-                //this.select= data.tags.map(function(item){ return x.find( function(itm){ return itm.id === item})}).map(it => it.name)
+                //this.selectedTags= data.tags.map(function(item){ return x.find( function(itm){ return itm.id === item})}).map(it => it.name)
 
-                this.select = data.tags.map(item => x.find(itm => itm.id === item)).map(it => it.name)
+                this.selectedTags = data.tags.map(item => x.find(itm => itm.id === item)).map(it => it.name)
+                this.selectedCategories = data.categories.map(item => y.find(itm => itm.id === item)).map(it => it.name)
                 this.loading = false
             } catch (e) {
                 console.log(e);
@@ -187,15 +220,25 @@ export default {
 
         },
 
-        handle() {
+        handleTags() {
 
-            let z = this.select
-            let c = this.obitem
+            let z = this.selectedTags
+            let c = this.tagObject
             //  console.log(z , 'is z');
             //  console.log(c , 'is c');
             //  console.log(z.map(item=>c.find(itm=>itm.name ===item)),'what?');
             // console.log( z.map(item=>c.find(itm=>itm.name ===item)).map(it =>it.id ),'is final');
             this.postContent.tags = z.map(item => c.find(itm => itm.name === item)).map(it => it.id)
+        },
+        handleCats() {
+
+            let z = this.selectedCategories
+            let c = this.categoriesObject
+            //  console.log(z , 'is z');
+            //  console.log(c , 'is c');
+            //  console.log(z.map(item=>c.find(itm=>itm.name ===item)),'what?');
+            // console.log( z.map(item=>c.find(itm=>itm.name ===item)).map(it =>it.id ),'is final');
+            this.postContent.categories = z.map(item => c.find(itm => itm.name === item)).map(it => it.id)
         },
 
         reset() {
@@ -211,6 +254,7 @@ export default {
 
         }
         this.getTags()
+        this.getCategories()
 
     },
 
