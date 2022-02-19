@@ -13,6 +13,14 @@
             <!-- </router-link> -->
         </v-chip>
     </template>
+    <template v-slot:item.categories="{ item }">
+        <v-chip v-for="( i , index )  in getTheCategories(item)" :key="index">
+            <!-- <router-link :to="{ name : i.id }"> -->
+            {{ i.name }}
+
+            <!-- </router-link> -->
+        </v-chip>
+    </template>
     <template v-slot:top>
         <v-toolbar flat>
             <v-toolbar-title>{{currentDateTime()}}</v-toolbar-title>
@@ -67,6 +75,7 @@ export default {
             search: '',
             loading: true,
             the_tags: '',
+            the_categories: '',
 
             headers: [{
                     text: 'نام',
@@ -85,6 +94,10 @@ export default {
                 {
                     text: 'برچسب ها',
                     value: 'tags'
+                },
+                {
+                    text: 'دسته بندی ها',
+                    value: 'categories'
                 },
                 {
                     text: 'تاریخ',
@@ -205,6 +218,29 @@ export default {
             }
 
         },
+        getCategories: async function () {
+
+            try {
+
+                const {
+                    data
+                } = await axios.get('/wp-json/wp/v2/categories', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    },
+                    params: {
+                        'context': 'edit',
+                        'per_page': 100
+                    }
+                })
+
+                this.the_categories = data
+
+            } catch (e) {
+
+            }
+
+        },
         getTheTags(itemm) {
 
             return itemm.tags.map(item => {
@@ -212,6 +248,16 @@ export default {
                 var foundTag = this.the_tags.find(tag => tag.id === tagId)
                 // console.log(foundTag , 'this is me');
                 return foundTag ? foundTag : ''
+            })
+
+        },
+        getTheCategories(itemm) {
+
+            return itemm.categories.map(item => {
+                let catId = item
+                var foundCats = this.the_categories.find(cat => cat.id === catId)
+                // console.log(foundCats , 'this is me');
+                return foundCats ? foundCats : ''
             })
 
         },
@@ -234,6 +280,7 @@ export default {
     created() {
         this.getUsers();
         this.getTags();
+        this.getCategories();
         //this.initialize()
         // console.log(new Date(2022, 2, 21));
         // console.log(new Intl.DateTimeFormat('fa-IR').format(new Date(2022, 2, 21)));
