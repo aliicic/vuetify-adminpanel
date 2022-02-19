@@ -2,13 +2,13 @@
 <v-data-table :headers="headers" :items="tagInfoList" sort-by="calories" class="elevation-1" :loading="loading" loading-text="لطفا منتظر بمانید">
     <template v-slot:top>
         <v-toolbar flat>
-            <v-toolbar-title>برچسب ها</v-toolbar-title>
+            <v-toolbar-title>دسته بندی ها</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="500px">
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                        اضافه کردن برچسب جدید
+                        اضافه کردن دسته بندی جدید
                     </v-btn>
                 </template>
                 <v-card>
@@ -75,7 +75,7 @@
 <script>
 import axios from '../plugins/axios'
 export default {
-    name: 'Tags',
+    name: 'Categories',
     data() {
         return {
             dialog: false,
@@ -128,7 +128,7 @@ export default {
 
                 const {
                     data
-                } = await axios.get('/wp-json/wp/v2/tags', {
+                } = await axios.get('/wp-json/wp/v2/categories', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                     },
@@ -138,7 +138,7 @@ export default {
                     }
                 })
                 this.tagInfoList.push(...data)
-                console.log(data, 'is tags informations');
+                console.log(data, 'is categories informations');
                 this.loading = false
             } catch (e) {
                 console.log('we have some errors');
@@ -151,7 +151,7 @@ export default {
             this.editedIndex = this.tagInfoList.indexOf(item)
             const {
                 data
-            } = await axios.get(`/wp-json/wp/v2/tags/${this.tagInfoList[this.editedIndex].id}`, {
+            } = await axios.get(`/wp-json/wp/v2/categories/${this.tagInfoList[this.editedIndex].id}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                 },
@@ -175,7 +175,7 @@ export default {
 
         deleteItemConfirm() {
 
-            axios.delete(`/wp-json/wp/v2/tags/${this.tagInfoList[this.editedIndex].id}`, {
+            axios.delete(`/wp-json/wp/v2/categories/${this.tagInfoList[this.editedIndex].id}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                 },
@@ -208,7 +208,7 @@ export default {
 
                     const {
                         data
-                    } = await axios.put(`/wp-json/wp/v2/tags/${this.tagInfoList[this.editedIndex].id}`,  this.editedItem ,
+                    } = await axios.put(`/wp-json/wp/v2/categories/${this.tagInfoList[this.editedIndex].id}`,  this.editedItem ,
                         {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
@@ -230,7 +230,7 @@ export default {
 
                     const {
                         data
-                    } = await axios.post('/wp-json/wp/v2/tags',
+                    } = await axios.post('/wp-json/wp/v2/categories',
                          this.editedItem , {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
@@ -253,7 +253,7 @@ export default {
     },
     computed: {
         formTitle() {
-            return this.editedIndex === -1 ? 'اضافه کردن برچسب جدید' : 'ویرایش اطلاعات برچسب'
+            return this.editedIndex === -1 ? 'اضافه کردن دسته بندی جدید' : 'ویرایش اطلاعات دسته بندی'
         },
     },
     watch: {

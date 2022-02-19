@@ -8,7 +8,7 @@
                     <!-- <v-textarea solo name="input-7-4" label="متن پست" v-model="postContent.content.raw"></v-textarea> -->
                     <tiptap v-model="postContent.content" />
                     <v-btn :disabled="!valid" color="success" class="mr-4" @click="publish">
-                       {{ !$route.params.id ? 'انتشار پست' : 'ویرایش پست' }}
+                        {{ !$route.params.id ? 'انتشار پست' : 'ویرایش پست' }}
                     </v-btn>
                     <v-btn color="error" class="mr-4" @click="reset">
                         پاک کردن مطالب نوشته شده
@@ -26,11 +26,11 @@
             </v-card>
         </v-col>
         <v-col cols="12">
-                <v-card class="ma-20 pa-5 mx-0 justify-center d-flex ">
-                    <p>برچسب ها</p>
-                    <v-combobox v-model="select" @input="handle" :items="items" label="I use chips" multiple chips></v-combobox>
-                </v-card>
-        
+            <v-card class="ma-20 pa-5 mx-0 justify-center d-flex ">
+                <p>برچسب ها</p>
+                <v-combobox v-model="select" @input="handle" :items="items" label="I use chips" multiple chips></v-combobox>
+            </v-card>
+
         </v-col>
     </v-row>
 
@@ -59,12 +59,12 @@ export default {
         items: [],
         itemsId: [],
         the_tags: [],
-        obitem :[],
+        obitem: [],
         postContent: {
             title: '',
             content: '',
             status: '',
-            tags :[]
+            tags: []
         }
 
     }),
@@ -80,58 +80,52 @@ export default {
     methods: {
         async publish() {
             this.$refs.form.validate()
-            
-            if(!this.$route.params.id){
 
-                    try {
+            if (!this.$route.params.id) {
 
-                const {
-                    data
-                } = await axios.post('/wp-json/wp/v2/posts',
-                    this.postContent, {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                try {
+
+                    const {
+                        data
+                    } = await axios.post('/wp-json/wp/v2/posts',
+                        this.postContent, {
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                            }
+
                         }
 
-                    }
+                    )
 
-                )
+                    console.log(data);
+                    // this.$refs.form.reset()
+                } catch (e) {
 
-                console.log(data);
-                // this.$refs.form.reset()
-            } catch (e) {
+                }
 
-            }
+            } else {
 
-            }else{
+                try {
 
+                    const {
+                        data
+                    } = await axios.put(`/wp-json/wp/v2/posts/${this.$route.params.id}`,
+                        this.postContent, {
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                            }
 
-            try {
-
-                const {
-                    data
-                } = await axios.put(`/wp-json/wp/v2/posts/${this.$route.params.id}`,
-                    this.postContent, {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                         }
 
-                    }
+                    )
 
-                )
+                    console.log(data);
+                    // this.$refs.form.reset()
+                } catch (e) {
 
-                console.log(data);
-                // this.$refs.form.reset()
-            } catch (e) {
-
-            }
-               
-
+                }
 
             }
-
-
-        
 
         },
         getTags: async function () {
@@ -145,12 +139,13 @@ export default {
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                     },
                     params: {
-                        'context': 'edit'
+                        'context': 'edit',
+                        'per_page': 100
                     }
                 })
 
                 this.itemsId.push(...data.map(data => data.id))
-                this.obitem  = data
+                this.obitem = data
                 this.items = data.map(data => data.name)
 
             } catch (e) {
@@ -179,45 +174,43 @@ export default {
                 this.postContent.title = data.title.rendered
                 this.postContent.content = data.content.rendered
                 this.postContent.status = data.status
-             
+
                 const x = this.obitem
 
                 //this.select= data.tags.map(function(item){ return x.find( function(itm){ return itm.id === item})}).map(it => it.name)
-            
 
-                this.select=data.tags.map(item=>x.find(itm=>itm.id ===item)).map(it =>it.name )
+                this.select = data.tags.map(item => x.find(itm => itm.id === item)).map(it => it.name)
                 this.loading = false
             } catch (e) {
                 console.log(e);
             }
 
         },
-       
-        handle(){
 
-         let z = this.select
-         let c =this.obitem
-        //  console.log(z , 'is z');
-        //  console.log(c , 'is c');
-        //  console.log(z.map(item=>c.find(itm=>itm.name ===item)),'what?');
-        // console.log( z.map(item=>c.find(itm=>itm.name ===item)).map(it =>it.id ),'is final');
-         this.postContent.tags=z.map(item=>c.find(itm=>itm.name ===item)).map(it =>it.id )
+        handle() {
+
+            let z = this.select
+            let c = this.obitem
+            //  console.log(z , 'is z');
+            //  console.log(c , 'is c');
+            //  console.log(z.map(item=>c.find(itm=>itm.name ===item)),'what?');
+            // console.log( z.map(item=>c.find(itm=>itm.name ===item)).map(it =>it.id ),'is final');
+            this.postContent.tags = z.map(item => c.find(itm => itm.name === item)).map(it => it.id)
         },
-
 
         reset() {
             this.$refs.form.reset()
             this.postContent.content = ''
         },
     },
-     async created() {
+    async created() {
 
         if (this.$route.params.id) {
             this.loading = true,
                 this.getPostDetails()
-             
+
         }
-          this.getTags()
+        this.getTags()
 
     },
 

@@ -99,12 +99,14 @@
                                 <v-list-item-title>پست جدید</v-list-item-title>
                             </v-list-item>
                         </router-link>
-                        <v-list-item class="mr-5">
-                            <v-list-item-icon>
-                                <v-icon>mdi-view-dashboard</v-icon>
-                            </v-list-item-icon>
-                            <v-list-item-title>دسته ها</v-list-item-title>
-                        </v-list-item>
+                        <router-link to="/dashboard/categories">
+                            <v-list-item class="mr-5">
+                                <v-list-item-icon>
+                                    <v-icon>mdi-view-dashboard</v-icon>
+                                </v-list-item-icon>
+                                <v-list-item-title>دسته ها</v-list-item-title>
+                            </v-list-item>
+                        </router-link>
                         <router-link to="/dashboard/tags">
                             <v-list-item class="mr-5">
                                 <v-list-item-icon>

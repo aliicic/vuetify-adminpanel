@@ -5,11 +5,12 @@
         {{ currentDateTime(item.date) }}
 
     </template>
-    <template v-slot:item.tags="{ item }">    
-    <v-chip v-for="i in getTheTags(item)" :key="i">
-        <!-- <router-link :to="{ name : i.id }"> -->
-        {{ i.name }}
-        <!-- </router-link> -->
+    <template v-slot:item.tags="{ item }">
+        <v-chip v-for="( i , index )  in getTheTags(item)" :key="index">
+            <!-- <router-link :to="{ name : i.id }"> -->
+            {{ i.name }}
+
+            <!-- </router-link> -->
         </v-chip>
     </template>
     <template v-slot:top>
@@ -65,7 +66,7 @@ export default {
             dialogDelete: false,
             search: '',
             loading: true,
-            the_tags : '',
+            the_tags: '',
 
             headers: [{
                     text: 'نام',
@@ -134,7 +135,7 @@ export default {
                     }
                 })
                 this.usersInfoList.push(...data)
-                console.log(data[0].tags, 'is post informations');
+                // console.log(data[0].tags, 'is post informations');
                 this.loading = false
             } catch (e) {
                 console.log('we have some errors');
@@ -143,7 +144,7 @@ export default {
         },
 
         deleteItem(item) {
-            console.log(item.id);
+            // console.log(item.id);
             this.editedIndex = this.usersInfoList.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
@@ -187,9 +188,17 @@ export default {
 
                 const {
                     data
-                } = await axios.get('/wp-json/wp/v2/tags')
-              
-              this.the_tags = data
+                } = await axios.get('/wp-json/wp/v2/tags', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    },
+                    params: {
+                        'context': 'edit',
+                        'per_page': 100
+                    }
+                })
+
+                this.the_tags = data
 
             } catch (e) {
 
@@ -198,12 +207,12 @@ export default {
         },
         getTheTags(itemm) {
 
-          return itemm.tags.map(item => {
+            return itemm.tags.map(item => {
                 let tagId = item
-                var foundTag = this.the_tags.find(tag => tag.id === tagId )
-                console.log(foundTag , 'this is me');
-                return foundTag  ? foundTag : ''
-            } )
+                var foundTag = this.the_tags.find(tag => tag.id === tagId)
+                // console.log(foundTag , 'this is me');
+                return foundTag ? foundTag : ''
+            })
 
         },
 
@@ -226,8 +235,8 @@ export default {
         this.getUsers();
         this.getTags();
         //this.initialize()
-        console.log(new Date(2022, 2, 21));
-        console.log(new Intl.DateTimeFormat('fa-IR').format(new Date(2022, 2, 21)));
+        // console.log(new Date(2022, 2, 21));
+        // console.log(new Intl.DateTimeFormat('fa-IR').format(new Date(2022, 2, 21)));
     },
 }
 </script>
