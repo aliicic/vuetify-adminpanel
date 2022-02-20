@@ -1,24 +1,16 @@
 <template>
-<v-data-table :headers="headers" :items="postInfoList" sort-by="calories" class="elevation-1" :loading="loading" loading-text="لطفا منتظر بمانید">
+<v-data-table :headers="headers" :items="postInfoList" sort-by="calories" class="elevation-1" :loading="postInfoList ==''" loading-text="لطفا منتظر بمانید">
     <template v-slot:item.date="{ item }">
-
         {{ currentDateTime(item.date) }}
-
     </template>
     <template v-slot:item.tags="{ item }">
         <v-chip v-for="( i , index )  in getTheTags(item)" :key="index">
-            <!-- <router-link :to="{ name : i.id }"> -->
             {{ i.name }}
-
-            <!-- </router-link> -->
         </v-chip>
     </template>
     <template v-slot:item.categories="{ item }">
         <v-chip v-for="( i , index )  in getTheCategories(item)" :key="index">
-            <!-- <router-link :to="{ name : i.id }"> -->
             {{ i.name }}
-
-            <!-- </router-link> -->
         </v-chip>
     </template>
     <template v-slot:top>
@@ -65,6 +57,9 @@
 
 <script>
 import axios from '../plugins/axios'
+import {
+    mapState
+} from 'vuex'
 var moment = require('jalali-moment')
 export default {
     name: 'Posts',
@@ -73,8 +68,7 @@ export default {
             dialog: false,
             dialogDelete: false,
             search: '',
-            the_categories: '',
-            loading: true,
+            loading: this.$store.state.loading,
             headers: [{
                     text: 'نام',
                     align: 'start',
@@ -107,18 +101,6 @@ export default {
                 },
             ],
             editedIndex: -1,
-            editedItem: {
-                name: '',
-                slug: '',
-                first_name: '',
-                last_name: '',
-                nickname: '',
-                email: '',
-                roles: '',
-                password: '',
-                username: '',
-
-            },
             defaultItem: {
                 name: '',
                 slug: '',
@@ -127,26 +109,34 @@ export default {
         }
     },
     computed: {
-        formTitle() {
-            return this.editedIndex === -1 ? 'اضافه کردن کاربر جدید' : 'ویرایش اطلاعات کاربر'
-        },
         postInfoList() {
             return this.$store.state.postInfoList
         },
-        the_tags() {
-            return this.$store.state.the_tags
-        },
-        // loading() {
-        //     return this.$store.state.loading
-        // },
+        //   ...mapState([postInfoList])
 
     },
     methods: {
+        getTheTags(itemm) {
+
+            return itemm.tags.map(item => {
+                let tagId = item
+                var foundTag = this.$store.state.all_the_tags.find(tag => tag.id === tagId)
+                // console.log(foundTag , 'this is me');
+                return foundTag ? foundTag : ''
+            })
+        },
+        getTheCategories(itemm) {
+            return itemm.categories.map(item => {
+                let catId = item
+                var foundCats = this.$store.state.all_the_categories.find(cat => cat.id === catId)
+                // console.log(foundCats , 'this is me');
+                return foundCats ? foundCats : ''
+            })
+        },
 
         deleteItem(item) {
             // console.log(item.id);
             this.editedIndex = this.postInfoList.indexOf(item)
-            this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
 
         },
@@ -166,58 +156,17 @@ export default {
         close() {
             this.dialog = false
             this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
             })
         },
         closeDelete() {
             this.dialogDelete = false
             this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
             })
         },
         currentDateTime(item) {
             return moment(item).locale('fa').format(' h:mm:ss a , YYYY/M/D');
-        },
-
-
-        getCategories: async function () {
-
-            try {
-
-                const {
-                    data
-                } = await axios.get('/wp-json/wp/v2/categories', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                    },
-                    params: {
-                        'context': 'edit',
-                        'per_page': 100
-                    }
-                })
-
-                this.the_categories = data
-
-            } catch (e) {
-
-            }
-
-        },
-        getTheTags(itemm) {        
-        this.$store.dispatch('getTheTags',itemm)
-        return this.$store.state.get_the_tags
-        },
-        getTheCategories(itemm) {
-
-            return itemm.categories.map(item => {
-                let catId = item
-                var foundCats = this.the_categories.find(cat => cat.id === catId)
-                // console.log(foundCats , 'this is me');
-                return foundCats ? foundCats : ''
-            })
-
         },
 
     },
@@ -232,12 +181,8 @@ export default {
     },
     created() {
         this.$store.dispatch('getPosts')
-        this.$store.dispatch('getTags')
-        this.getCategories();
-        console.log(this.$store.state.product, 'hey its ');
-        //this.initialize()
-        // console.log(new Date(2022, 2, 21));
-        // console.log(new Intl.DateTimeFormat('fa-IR').format(new Date(2022, 2, 21)));
+        this.$store.dispatch('getAllTags')
+        this.$store.dispatch('getAllCategories')
     },
 }
 </script>

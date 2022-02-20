@@ -5,36 +5,29 @@ import axios from '../plugins/axios'
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
-
+  
     state() {
         return {
             postInfoList: [],
+            postInfoListFirst: [],
             loading: true,
-            the_tags: '',
-            get_the_tags: [],
-
-            
-
+            all_the_tags: [],
+            all_the_categories: [],
+           
         }
     },
     mutations: {
         SET_POST(state,data) {
-        state.postInfoList =data
+        state.postInfoList= data
+
         },
-        SET_TAGS(state,data) {
-        state.the_tags = data
+        SET_ALL_TAGS(state,data) {
+        state.all_the_tags = data
+
         },
-        SET_THE_TAGS(state,payload) {
-        state.get_the_tags = payload.tags.map(item => {
-                let tagId = item
-                var foundTag = state.the_tags.find(tag => tag.id === tagId)
-                // console.log(foundTag , 'this is me');
-                return foundTag ? foundTag : ''
-        })
+        SET_ALL_CATEGORIES(state,data) {
+        state.all_the_categories = data
         },
-        // LOADING_STATUS(state,data) {
-        // state.loading = data
-        // }
     },
     actions: {
         
@@ -55,14 +48,12 @@ const store = new Vuex.Store({
                     }
                 })
                 context.commit('SET_POST',data)
-               // context.commit('LOADING_STATUS',false)
             } catch (e) {
-                console.log('we have some errors');
+                console.log('we have some errors is getpost function');
             }
 
-        },
-        
-        getTags: async function (context) {
+        },        
+        getAllTags: async function (context) {
 
             try {
 
@@ -78,7 +69,30 @@ const store = new Vuex.Store({
                     }
                 })
 
-                     context.commit('SET_TAGS',data)
+                     context.commit('SET_ALL_TAGS',data)
+
+            } catch (e) {
+
+            }
+
+        },
+        getAllCategories: async function (context) {
+
+              try {
+
+                const {
+                    data
+                } = await axios.get('/wp-json/wp/v2/categories', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    },
+                    params: {
+                        'context': 'edit',
+                        'per_page': 100
+                    }
+                })
+
+                context.commit('SET_ALL_CATEGORIES',data)
 
             } catch (e) {
 
@@ -86,10 +100,10 @@ const store = new Vuex.Store({
 
         },
 
-        getTheTags(context,payload) {
+        // getTheCategories(context,payload) {
                 
-        context.commit('SET_THE_TAGS',payload)
-        }
+        // context.commit('SET_THE_CATEGORIES',payload)
+        // }
 
     }
 })
