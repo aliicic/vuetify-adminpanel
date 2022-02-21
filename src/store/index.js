@@ -16,6 +16,12 @@ const store = new Vuex.Store({
            
         }
     },
+    getters: {
+    getPostById: (state) => (id) => {
+        
+            return state.postInfoList.find(post => post.id == id)
+     }   
+    },
     mutations: {
         SET_POST(state,data) {
         state.postInfoList= data
@@ -31,13 +37,13 @@ const store = new Vuex.Store({
     },
     actions: {
         
-        getPosts: async function (context) {
+        getPosts: async function (context , payload ="") {
 
             try {
 
                 const {
                     data
-                } = await axios.get('/wp-json/wp/v2/posts', {
+                } = await axios.get(`/wp-json/wp/v2/posts/${payload}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                     },
@@ -47,7 +53,13 @@ const store = new Vuex.Store({
 
                     }
                 })
-                context.commit('SET_POST',data)
+                console.log(data, 'this response');
+                if (payload) {
+                   context.commit('SET_POST',[data])  
+                } else {
+                    context.commit('SET_POST',data)
+                }
+              
             } catch (e) {
                 console.log('we have some errors is getpost function');
             }

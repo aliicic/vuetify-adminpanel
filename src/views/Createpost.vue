@@ -4,9 +4,9 @@
         <v-col cols="12" sm="9">
             <v-card class="ma-10 pa-5 ml-md-0" :loading="loading">
                 <v-form ref="form" v-model="valid" lazy-validation>
-                    <v-text-field v-model="postContent.title" :counter="10" :rules="nameRules" label="عنوان پست" required></v-text-field>
+                    <v-text-field v-model="postContent.title.raw" :counter="10" :rules="nameRules" label="عنوان پست" required></v-text-field>
                     <!-- <v-textarea solo name="input-7-4" label="متن پست" v-model="postContent.content.raw"></v-textarea> -->
-                    <tiptap v-model="postContent.content" />
+                    <tiptap v-model="postContent.content.raw" />
                     <v-btn :disabled="!valid" color="success" class="mr-4" @click="publish">
                         {{ !$route.params.id ? 'انتشار پست' : 'ویرایش پست' }}
                     </v-btn>
@@ -47,6 +47,7 @@
 <script>
 import axios from '../plugins/axios'
 import Tiptap from '../components/TipTap'
+import { createLogger } from 'vuex'
 export default {
     name: 'CreatePost',
     components: {
@@ -153,6 +154,7 @@ export default {
                 this.tagsItemsId.push(...data.map(data => data.id))
                 this.tagObject = data
                 this.tagItems = data.map(data => data.name)
+                console.log(this.tagObject, '0');  
 
             } catch (e) {
                 console.log('we have some errors');
@@ -184,65 +186,55 @@ export default {
             }
 
         },
-        async getPostDetails() {
+        // async getPostDetails() {
 
-            try {
+        //     try {
 
-                const {
-                    data
-                } = await axios.get(`/wp-json/wp/v2/posts/${this.$route.params.id}`, {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                        },
-                        params: {
-                            'context': 'edit'
-                        }
+        //         const {
+        //             data
+        //         } = await axios.get(`/wp-json/wp/v2/posts/${this.$route.params.id}`, {
+        //                 headers: {
+        //                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+        //                 },
+        //                 params: {
+        //                     'context': 'edit'
+        //                 }
 
-                    }
+        //             }
 
-                )
+        //         )
 
-                this.postContent.title = data.title.rendered
-                this.postContent.content = data.content.rendered
-                this.postContent.status = data.status
-                this.postContent.tags = data.tags
-                this.postContent.categories = data.categories
+        //         this.postContent = data
 
-                let x = this.tagObject
-                let y = this.categoriesObject
 
-                //this.selectedTags= data.tags.map(function(item){ return x.find( function(itm){ return itm.id === item})}).map(it => it.name)
+        //         let x = this.tagObject
+        //         let y = this.categoriesObject
 
-                this.selectedTags = data.tags.map(item => x.find(itm => itm.id === item))
+        //         console.log(x, 'this is ta object');
+        //         console.log(y, 'this is categories object');
+
+        //         this.selectedTags = data.tags.map(item => x.find(itm => itm.id === item))
                 
-                this.selectedTags =  this.selectedTags.map(it => it.name)
+        //         this.selectedTags =  this.selectedTags.map(it => it.name)
 
-                this.selectedCategories = data.categories.map(item => y.find(itm => itm.id === item)).map(it => it.name)
-                this.loading = false
-            } catch (e) {
-                console.log(e);
-            }
+        //         this.selectedCategories = data.categories.map(item => y.find(itm => itm.id === item)).map(it => it.name)
+        //         this.loading = false
+        //     } catch (e) {
+        //         console.log(e);
+        //     }
 
-        },
+        // },
 
         handleTags() {
 
             let z = this.selectedTags
             let c = this.tagObject
-            //  console.log(z , 'is z');
-            //  console.log(c , 'is c');
-            //  console.log(z.map(item=>c.find(itm=>itm.name ===item)),'what?');
-            // console.log( z.map(item=>c.find(itm=>itm.name ===item)).map(it =>it.id ),'is final');
             this.postContent.tags = z.map(item => c.find(itm => itm.name === item)).map(it => it.id)
         },
         handleCats() {
 
             let z = this.selectedCategories
             let c = this.categoriesObject
-            //  console.log(z , 'is z');
-            //  console.log(c , 'is c');
-            //  console.log(z.map(item=>c.find(itm=>itm.name ===item)),'what?');
-            // console.log( z.map(item=>c.find(itm=>itm.name ===item)).map(it =>it.id ),'is final');
             this.postContent.categories = z.map(item => c.find(itm => itm.name === item)).map(it => it.id)
         },
 
@@ -253,13 +245,52 @@ export default {
     },
     async created() {
 
+      
+
+        // this.getCategories()
+        //         let y = this.categoriesObject
+
+      
+        console.log(this.tagObject, '1');  
         if (this.$route.params.id) {
-            this.loading = true,
-                this.getPostDetails()
+            this.loading = true
+                // this.getPostDetails()
+          if(this.$store.getters.getPostById(this.$route.params.id)){
+
+                  this.postContent = this.$store.getters.getPostById(this.$route.params.id)
+
+                    }else{
+                  this.$store.dispatch('getPosts' , this.$route.params.id).then(()=>
+                  {
+                      this.postContent = this.$store.getters.getPostById(this.$route.params.id)
+                  })      
+                  
+                    }
+
+                  this.getTags().then(()=>{
+                       
+                    }).then(()=>{
+                       this.getCategories().then(()=>{
+                        var x = this.tagObject
+                        let y = this.categoriesObject 
+
+                this.selectedTags = this.postContent.tags.map(item => x.find(itm => itm.id == item))               
+                this.selectedTags =  this.selectedTags.map(it => it.name)
+                this.selectedCategories = this.postContent.categories.map(item => y.find(itm => itm.id === item)).map(it => it.name)
+                       }) 
+                    })
+
+        
+    
+
+                this.loading = false
+
+        
+          
+
 
         }
-        this.getTags()
-        this.getCategories()
+
 
     },
 
