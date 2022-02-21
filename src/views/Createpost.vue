@@ -205,13 +205,18 @@ export default {
                 this.postContent.title = data.title.rendered
                 this.postContent.content = data.content.rendered
                 this.postContent.status = data.status
+                this.postContent.tags = data.tags
+                this.postContent.categories = data.categories
 
-                const x = this.tagObject
-                const y = this.categoriesObject
+                let x = this.tagObject
+                let y = this.categoriesObject
 
                 //this.selectedTags= data.tags.map(function(item){ return x.find( function(itm){ return itm.id === item})}).map(it => it.name)
 
-                this.selectedTags = data.tags.map(item => x.find(itm => itm.id === item)).map(it => it.name)
+                this.selectedTags = data.tags.map(item => x.find(itm => itm.id === item))
+                
+                this.selectedTags =  this.selectedTags.map(it => it.name)
+
                 this.selectedCategories = data.categories.map(item => y.find(itm => itm.id === item)).map(it => it.name)
                 this.loading = false
             } catch (e) {

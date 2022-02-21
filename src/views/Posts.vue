@@ -43,7 +43,7 @@
     </template>
     <template v-slot:item.actions="{ item }">
         <router-link :to="{ name : 'CreatePost' , params : {id  : item.id} }">
-            <v-icon small class="mr-2" @click="editItem(item)">
+            <v-icon small class="mr-2">
                 mdi-pencil
             </v-icon>
         </router-link>
