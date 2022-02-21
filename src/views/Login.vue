@@ -83,7 +83,9 @@ export default {
                         }
 
                     )
-                    window.localStorage.setItem("userToken", data.token)
+                    localStorage.setItem("userToken", data.token)
+                    localStorage.setItem("displayname", data.user_display_name)
+                    localStorage.setItem("email", data.user_email)
                     //console.log(data.token);
                     this.loading = false
                     this.errorText = "success"

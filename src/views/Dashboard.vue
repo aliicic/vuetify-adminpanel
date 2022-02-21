@@ -38,10 +38,10 @@
                 </v-list-item-avatar>
                 <v-list-item-content>
                     <v-list-item-title>
-                        علی آقاخانی
+                       {{username}}
                     </v-list-item-title>
                     <v-list-item-subtitle>
-                        مدیر سایت
+                      {{email}}
                     </v-list-item-subtitle>
                 </v-list-item-content>
 
@@ -147,6 +147,8 @@ export default {
     data: () => ({
         drawer: true,
         group: null,
+        username : window.localStorage.getItem('displayname'),
+        email :  window.localStorage.getItem('email')
     }),
 
     methods: {

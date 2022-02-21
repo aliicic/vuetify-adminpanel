@@ -4,6 +4,10 @@ import axios from '../plugins/axios'
 
 Vue.use(Vuex);
 
+const SET_POST = 'SET_POST'
+const SET_ALL_TAGS = 'SET_ALL_TAGS'
+const SET_ALL_CATEGORIES= 'SET_ALL_CATEGORIES'
+
 const store = new Vuex.Store({
   
     state() {
@@ -23,21 +27,21 @@ const store = new Vuex.Store({
      }   
     },
     mutations: {
-        SET_POST(state,data) {
+        [SET_POST](state,data) {
         state.postInfoList= data
 
         },
-        SET_ALL_TAGS(state,data) {
+        [SET_ALL_TAGS](state,data) {
         state.all_the_tags = data
 
         },
-        SET_ALL_CATEGORIES(state,data) {
+        [SET_ALL_CATEGORIES](state,data) {
         state.all_the_categories = data
         },
     },
     actions: {
         
-        getPosts: async function (context , payload ="") {
+        getPosts: async function ({ commit } , payload ="") {
 
             try {
 
@@ -55,9 +59,9 @@ const store = new Vuex.Store({
                 })
                 console.log(data, 'this response');
                 if (payload) {
-                   context.commit('SET_POST',[data])  
+                   commit('SET_POST',[data])  
                 } else {
-                    context.commit('SET_POST',data)
+                    commit('SET_POST',data)
                 }
               
             } catch (e) {
@@ -65,7 +69,7 @@ const store = new Vuex.Store({
             }
 
         },        
-        getAllTags: async function (context) {
+        getAllTags: async function ({commit}) {
 
             try {
 
@@ -81,14 +85,14 @@ const store = new Vuex.Store({
                     }
                 })
 
-                     context.commit('SET_ALL_TAGS',data)
+                     commit('SET_ALL_TAGS',data)
 
             } catch (e) {
 
             }
 
         },
-        getAllCategories: async function (context) {
+        getAllCategories: async function ({commit}) {
 
               try {
 
@@ -104,7 +108,7 @@ const store = new Vuex.Store({
                     }
                 })
 
-                context.commit('SET_ALL_CATEGORIES',data)
+                commit('SET_ALL_CATEGORIES',data)
 
             } catch (e) {
 
