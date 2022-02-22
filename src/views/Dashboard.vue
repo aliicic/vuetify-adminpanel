@@ -7,8 +7,8 @@
         <v-toolbar-title>پنل ادمین</v-toolbar-title>
 
         <v-spacer></v-spacer>
-        <span >
-         {{ currentDateTime() }}
+        <span>
+            {{ currentDateTime() }}
         </span>
 
         <v-btn icon>
@@ -18,7 +18,6 @@
         <v-btn icon>
             <v-icon>mdi-magnify</v-icon>
         </v-btn>
-     
 
         <v-menu left bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -43,10 +42,10 @@
                 </v-list-item-avatar>
                 <v-list-item-content>
                     <v-list-item-title>
-                       {{username}}
+                        {{username}}
                     </v-list-item-title>
                     <v-list-item-subtitle>
-                      {{email}}
+                        {{email}}
                     </v-list-item-subtitle>
                 </v-list-item-content>
 
@@ -62,12 +61,15 @@
                         <v-list-item-title>داشبورد</v-list-item-title>
                     </v-list-item>
                 </router-link>
-                <v-list-item>
-                    <v-list-item-icon>
-                        <v-icon>mdi-account</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>اطلاعات کاربری</v-list-item-title>
-                </v-list-item>
+                <router-link :to="{ name :'Userinfo'}">
+                    <v-list-item>
+                        <v-list-item-icon>
+                            <v-icon>mdi-account</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>اطلاعات کاربری</v-list-item-title>
+                    </v-list-item>
+                </router-link>
+
                 <router-link :to="{ name :'Users'}">
                     <v-list-group :value="false" prepend-icon="mdi-account-multiple">
                         <template v-slot:activator>
@@ -136,10 +138,10 @@
 
     </v-navigation-drawer>
     <v-main>
-     <v-alert v-if="this.$store.state.alert_message.text"  transition="scale-transition"  dense :type="this.$store.state.alert_message.type">
-      {{this.$store.state.alert_message.text}}
-    </v-alert>
-     <!-- <v-alert :value="error" dismissible transition="scale-transition"  dense type="error">
+        <v-alert v-if="this.$store.state.alert_message.text" transition="scale-transition" dense :type="this.$store.state.alert_message.type">
+            {{this.$store.state.alert_message.text}}
+        </v-alert>
+        <!-- <v-alert :value="error" dismissible transition="scale-transition"  dense type="error">
       I'm a success alert.
     </v-alert> -->
 
@@ -159,10 +161,10 @@ export default {
     data: () => ({
         drawer: true,
         group: null,
-        username : window.localStorage.getItem('displayname'),
-        email :  window.localStorage.getItem('email'),
-        success : false,
-        error:false
+        username: window.localStorage.getItem('displayname'),
+        email: window.localStorage.getItem('email'),
+        success: false,
+        error: false
     }),
 
     methods: {

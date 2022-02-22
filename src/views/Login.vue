@@ -80,12 +80,31 @@ export default {
                     } = await axios.post('/wp-json/jwt-auth/v1/token', {
                             "username": user,
                             "password": pass
+                        }, {
+                            params: {
+                                'context': 'edit'
+                            }
                         }
 
                     )
+                    const res =  await axios.get(`/wp-json/wp/v2/users/me` ,
+                     {
+                            headers:{
+                               'Authorization' : `Bearer ${await data.token}` 
+                            },
+                            params: {
+                                'context': 'edit'
+                            }
+                     }
+
+                    )
                     localStorage.setItem("userToken", data.token)
-                    localStorage.setItem("displayname", data.user_display_name)
+                    localStorage.setItem("displayname", res.data.nickname)
                     localStorage.setItem("email", data.user_email)
+                    localStorage.setItem("date", res.data.registered_date)
+                    localStorage.setItem("username", res.data.username)
+                    localStorage.setItem("first_name", res.data.first_name)
+                    localStorage.setItem("last_name", res.data.last_name)
                     //console.log(data.token);
                     this.loading = false
                     this.errorText = "success"

@@ -140,18 +140,36 @@ export default {
             this.dialogDelete = true
 
         },
-        deleteItemConfirm() {
+        async deleteItemConfirm() {
 
-            axios.delete(`/wp-json/wp/v2/posts/${this.postInfoList[this.editedIndex].id}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                },
-                params: {
-                    'context': 'edit'
-                }
-            })
-            this.postInfoList.splice(this.editedIndex, 1)
-            this.closeDelete()
+            try {
+
+               await axios.delete(`/wp-json/wp/v2/posts/${this.postInfoList[this.editedIndex].id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    },
+                    params: {
+                        'context': 'edit'
+                    }
+                })
+
+                
+                this.postInfoList.splice(this.editedIndex, 1)
+                this.closeDelete()
+                this.$store.commit('SET_MSG' , {text : 'پست با موفقیت حذف شد ' , type : 'success'})
+            
+
+            } catch (e) {
+                     
+                    console.log(e);
+                    this.$store.commit('SET_MSG', {
+                    text: e.response.data.message,
+                    type: 'error'
+                })
+                 this.closeDelete()
+
+            }
+
         },
         close() {
             this.dialog = false

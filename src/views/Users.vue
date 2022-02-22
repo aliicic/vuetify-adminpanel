@@ -26,7 +26,7 @@
                                     <v-text-field v-model="editedItem.last_name" label="نام خانوادگی"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6">
-                                    <v-text-field v-model="editedItem.username" label="نام کاربری"  :disabled="editedIndex !== -1"></v-text-field>
+                                    <v-text-field v-model="editedItem.username" label="نام کاربری" :disabled="editedIndex !== -1"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6">
                                     <v-text-field v-model="editedItem.email" label="آدرس ایمیل"></v-text-field>
@@ -124,13 +124,13 @@ export default {
             editedItem: {
                 name: '',
                 slug: '',
-                first_name :'',
-                last_name : '',
-                nickname : '',
-                email : '',
-                roles : '',
-                password :'',
-                username :'',
+                first_name: '',
+                last_name: '',
+                nickname: '',
+                email: '',
+                roles: '',
+                password: '',
+                username: '',
 
             },
             defaultItem: {
@@ -192,20 +192,38 @@ export default {
 
         },
 
-        deleteItemConfirm() {
+        async deleteItemConfirm() {
 
-            axios.delete(`/wp-json/wp/v2/users/${this.usersInfoList[this.editedIndex].id}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                },
-                params: {
-                    'force': true,
-                    'reassign': 1
-                }
-            })
-            this.usersInfoList.splice(this.editedIndex, 1)
-            this.closeDelete()
+            try {
+
+                await axios.delete(`/wp-json/wp/v2/users/${this.usersInfoList[this.editedIndex].id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    },
+                    params: {
+                        'force': true,
+                        'reassign': 1
+                    }
+                })
+                this.usersInfoList.splice(this.editedIndex, 1)
+                this.closeDelete()
+                this.$store.commit('SET_MSG', {
+                    text: 'کاربر با موفقیت حذف شد ',
+                    type: 'success'
+                })
+
+            } catch (e) {
+
+                console.log(e);
+                this.$store.commit('SET_MSG', {
+                    text: e.response.data.message,
+                    type: 'error'
+                })
+
+            }
+
         },
+
         close() {
             this.dialog = false
             this.$nextTick(() => {
@@ -223,13 +241,10 @@ export default {
         },
         save: async function () {
             if (this.editedIndex > -1) {
-               
+
                 try {
 
-                    const {
-                        data
-                    } = await axios.put(`/wp-json/wp/v2/users/${this.usersInfoList[this.editedIndex].id}`,  this.editedItem ,
-                        {
+                    await axios.put(`/wp-json/wp/v2/users/${this.usersInfoList[this.editedIndex].id}`, this.editedItem, {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                             }
@@ -238,20 +253,24 @@ export default {
 
                     )
 
-                    console.log(data);
-                  //  this.$refs.form.reset()
+                    this.$store.commit('SET_MSG', {
+                        text: 'کاربر با موققیت ویرایش شد',
+                        type: 'success'
+                    })
                     Object.assign(this.usersInfoList[this.editedIndex], this.editedItem)
                 } catch (e) {
+                    this.$store.commit('SET_MSG', {
+                        text: e.response.data.message,
+                        type: 'error'
+                    })
 
                 }
             } else {
                 // this.desserts.push(this.editedItem)
                 try {
 
-                    const {
-                        data
-                    } = await axios.post('/wp-json/wp/v2/users',
-                         this.editedItem , {
+                    await axios.post('/wp-json/wp/v2/users',
+                        this.editedItem, {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                             }
@@ -260,9 +279,11 @@ export default {
 
                     )
 
-                    console.log(data);
-                    //this.$refs.form.reset()
-                     this.usersInfoList.push(this.editedItem)
+                    this.$store.commit('SET_MSG', {
+                        text: 'کاربر با موققیت اضافه شد',
+                        type: 'success'
+                    })
+                    this.usersInfoList.push(this.editedItem)
                 } catch (e) {
 
                 }

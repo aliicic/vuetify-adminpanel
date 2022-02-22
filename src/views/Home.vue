@@ -5,7 +5,7 @@
          <v-card class="green">
            <v-card-text class="d-flex white--text">
              <span>
-                  آیتم
+               تاریخ عضویت : {{ currentDateTime(date) }}
              </span>
              <v-spacer>
 
@@ -67,17 +67,27 @@
 </template>
 
 <script>
-
-
+var moment = require('jalali-moment')
   export default {
     name: 'Home',
 
     components: {
 
     },
+    data : () => ({
+     
+     date : window.localStorage.getItem('date')
+
+    }),
+    methods:{
+        currentDateTime(item) {
+            return moment(item).locale('fa').format('YYYY/M/D');
+        }
+    },
+
 
     created(){
-      console.log({...this.$vuetify.breakpoint});
+     // console.log({...this.$vuetify.breakpoint});
     }
   }
 </script>
