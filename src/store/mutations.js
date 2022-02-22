@@ -13,5 +13,14 @@ export default {
         },
         [SET_ALL_CATEGORIES](state,data) {
         state.all_the_categories = data
+    },
+    SET_MSG(state ,{ text , type }) {
+        state.alert_message = {
+            text,
+            type
+         } 
         },
+    RESET_MSG(state) {
+        state.alert_message = {} 
+        }
     }

@@ -7,7 +7,7 @@
                     <v-text-field v-model="postContent.title.raw" :counter="10" :rules="nameRules" label="عنوان پست" required></v-text-field>
                     <!-- <v-textarea solo name="input-7-4" label="متن پست" v-model="postContent.content.raw"></v-textarea> -->
                     <tiptap v-model="postContent.content.raw" />
-                    <v-btn :disabled="!valid" color="success" class="mr-4" @click="publish">
+                    <v-btn :disabled="!valid" :loading="btnloading" color="success" class="mr-4" @click="publish">
                         {{ !$route.params.id ? 'انتشار پست' : 'ویرایش پست' }}
                     </v-btn>
                     <v-btn color="error" class="mr-4" @click="reset">
@@ -58,6 +58,7 @@ export default {
         valid: true,
         thisIsNewPost: true,
         loading: false,
+        btnloading: false ,
         nameRules: [
             v => !!v || 'Name is required',
             v => (v && v.length <= 10) || 'Name must be less than 10 characters',
@@ -73,8 +74,14 @@ export default {
         the_tags: [],
         tagObject: [],
         postContent: {
-            title: '',
-            content: '',
+            title:  {
+                raw :'',
+          
+            },
+            content: {
+                raw :'' ,
+               
+            },
             status: '',
             tags: [],
             categories: [],
@@ -87,7 +94,7 @@ export default {
     methods: {
         async publish() {
             this.$refs.form.validate()
-
+            this.btnloading = true
             if (!this.$route.params.id) {
 
                 try {
@@ -105,9 +112,12 @@ export default {
                     )
 
                     console.log(data);
-                    // this.$refs.form.reset()
-                } catch (e) {
+                    this.$store.commit('SET_MSG' , {text : 'پست با موفقیت ذخیره شد ' , type : 'success'})
+                    this.btnloading = false
 
+                } catch (e) {
+                   this.$store.commit('SET_MSG' , {text : e.response.data.message , type : 'error'})
+                   this.btnloading = false
                 }
 
             } else {
@@ -115,7 +125,7 @@ export default {
                 try {
 
                     const {
-                        data
+                        data 
                     } = await axios.put(`/wp-json/wp/v2/posts/${this.$route.params.id}`,
                         this.postContent, {
                             headers: {
@@ -128,8 +138,11 @@ export default {
 
                     console.log(data);
                     // this.$refs.form.reset()
+                    this.$store.commit('SET_MSG' , {text : 'پست با موفقیت ویرایش شد ' , type : 'success'})
+                    this.btnloading = false
                 } catch (e) {
-
+                  this.$store.commit('SET_MSG' , {text : e.response.data.message , type : 'error'})
+                  this.btnloading = false
                 }
 
             }
@@ -247,7 +260,7 @@ export default {
 
 
       
-        console.log(this.tagObject, '1');  
+
         if (this.$route.params.id) {
             this.loading = true
                 // this.getPostDetails()
@@ -327,6 +340,14 @@ export default {
 
 
         }
+
+          this.$store.dispatch('getAllTags').then(()=>{
+          this.tagObject = this.$store.state.all_the_tags
+          this.tagItems =  this.$store.state.all_the_tags.map(data => data.name)
+         })
+        this.$store.dispatch('getAllCategories').then(()=>{
+          this.categoriesObject = this.$store.state.all_the_categories
+          this.categoriesItems =  this.$store.state.all_the_categories.map(data => data.name)})
 
 
     },

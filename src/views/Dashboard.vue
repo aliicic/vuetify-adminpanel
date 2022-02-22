@@ -7,6 +7,9 @@
         <v-toolbar-title>پنل ادمین</v-toolbar-title>
 
         <v-spacer></v-spacer>
+        <span >
+         {{ currentDateTime() }}
+        </span>
 
         <v-btn icon>
             <v-icon>mdi-heart</v-icon>
@@ -15,6 +18,7 @@
         <v-btn icon>
             <v-icon>mdi-magnify</v-icon>
         </v-btn>
+     
 
         <v-menu left bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -29,6 +33,7 @@
                 </v-list-item>
             </v-list>
         </v-menu>
+
     </v-app-bar>
     <v-navigation-drawer app right v-model="drawer">
         <template #prepend>
@@ -64,14 +69,14 @@
                     <v-list-item-title>اطلاعات کاربری</v-list-item-title>
                 </v-list-item>
                 <router-link :to="{ name :'Users'}">
-                    <v-list-group :value="false" prepend-icon="mdi-account-circle">
+                    <v-list-group :value="false" prepend-icon="mdi-account-multiple">
                         <template v-slot:activator>
                             <v-list-item-title>کاربران</v-list-item-title>
                         </template>
                         <router-link to="/dashboard/createuser">
                             <v-list-item class="mr-5">
                                 <v-list-item-icon>
-                                    <v-icon>mdi-view-dashboard</v-icon>
+                                    <v-icon>mdi-account-plus</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-title>کاربر جدید</v-list-item-title>
                             </v-list-item>
@@ -79,7 +84,7 @@
                     </v-list-group>
                 </router-link>
                 <router-link to="/dashboard/posts">
-                    <v-list-group :value="false" prepend-icon="mdi-account-circle">
+                    <v-list-group :value="false" prepend-icon="mdi-file-multiple">
 
                         <template v-slot:activator>
                             <v-list-item-title>پست ها</v-list-item-title>
@@ -87,14 +92,14 @@
 
                         <v-list-item class="mr-5">
                             <v-list-item-icon>
-                                <v-icon>mdi-view-dashboard</v-icon>
+                                <v-icon> mdi-file</v-icon>
                             </v-list-item-icon>
                             <v-list-item-title>پست ها</v-list-item-title>
                         </v-list-item>
                         <router-link to="/dashboard/createpost">
                             <v-list-item class="mr-5">
                                 <v-list-item-icon>
-                                    <v-icon>mdi-view-dashboard</v-icon>
+                                    <v-icon>mdi-file-plus</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-title>پست جدید</v-list-item-title>
                             </v-list-item>
@@ -102,7 +107,7 @@
                         <router-link to="/dashboard/categories">
                             <v-list-item class="mr-5">
                                 <v-list-item-icon>
-                                    <v-icon>mdi-view-dashboard</v-icon>
+                                    <v-icon>mdi-folder-multiple</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-title>دسته ها</v-list-item-title>
                             </v-list-item>
@@ -110,7 +115,7 @@
                         <router-link to="/dashboard/tags">
                             <v-list-item class="mr-5">
                                 <v-list-item-icon>
-                                    <v-icon>mdi-view-dashboard</v-icon>
+                                    <v-icon>mdi-cards</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-title>برچسب ها</v-list-item-title>
                             </v-list-item>
@@ -130,8 +135,14 @@
         </template>
 
     </v-navigation-drawer>
-
     <v-main>
+     <v-alert v-if="this.$store.state.alert_message.text"  transition="scale-transition"  dense :type="this.$store.state.alert_message.type">
+      {{this.$store.state.alert_message.text}}
+    </v-alert>
+     <!-- <v-alert :value="error" dismissible transition="scale-transition"  dense type="error">
+      I'm a success alert.
+    </v-alert> -->
+
         <router-view />
     </v-main>
     <v-footer padless>
@@ -143,12 +154,15 @@
 </template>
 
 <script>
+var moment = require('jalali-moment')
 export default {
     data: () => ({
         drawer: true,
         group: null,
         username : window.localStorage.getItem('displayname'),
-        email :  window.localStorage.getItem('email')
+        email :  window.localStorage.getItem('email'),
+        success : false,
+        error:false
     }),
 
     methods: {
@@ -160,7 +174,10 @@ export default {
                 name: "Login"
             })
 
-        }
+        },
+        currentDateTime(item) {
+            return moment(item).locale('fa').format(' h:mm:ss a , YYYY/M/D');
+        },
 
     }
     // beforeRouteEnter(to, from, next) {
