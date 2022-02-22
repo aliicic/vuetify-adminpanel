@@ -7,7 +7,7 @@ This project is made having better experience in using wordpress admin panel
 
 `Note:`  
 
-<h2><a href="#">DEMO</a></h2>
+<h2><a href="https://vuetify-adminpanel.netlify.app/#/">DEMO</a></h2>
 
 # title 
 
