@@ -1,5 +1,5 @@
 <template>
-<v-data-table :headers="headers" :items="tagInfoList" sort-by="calories" class="elevation-1" :loading="loading" loading-text="لطفا منتظر بمانید">
+<v-data-table :headers="headers" :items="catInfoList" sort-by="calories" class="elevation-1" :loading="catInfoList == ''" loading-text="لطفا منتظر بمانید">
     <template v-slot:top>
         <v-toolbar flat>
             <v-toolbar-title>دسته بندی ها</v-toolbar-title>
@@ -82,7 +82,6 @@ export default {
             dialogDelete: false,
             search: '',
             editedIndex: '',
-            loading: true,
 
             headers: [{
                     text: 'نام',
@@ -107,7 +106,7 @@ export default {
                     value: 'actions'
                 },
             ],
-            tagInfoList: [],
+            catInfoList: [],
             editedIndex: -1,
             editedItem: {
                 name: '',
@@ -122,33 +121,33 @@ export default {
     },
     methods: {
 
-        getUsers: async function () {
+        // getUsers: async function () {
 
-            try {
+        //     try {
 
-                const {
-                    data
-                } = await axios.get('/wp-json/wp/v2/categories', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                    },
-                    params: {
-                        'context': 'edit',
-                        'per_page': 100
-                    }
-                })
-                this.tagInfoList.push(...data)
-                console.log(data, 'is categories informations');
-                this.loading = false
-            } catch (e) {
-                console.log('we have some errors');
-            }
+        //         const {
+        //             data
+        //         } = await axios.get('/wp-json/wp/v2/categories', {
+        //             headers: {
+        //                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+        //             },
+        //             params: {
+        //                 'context': 'edit',
+        //                 'per_page': 100
+        //             }
+        //         })
+        //         this.catInfoList.push(...data)
+        //         console.log(data, 'is categories informations');
+        //         this.loading = false
+        //     } catch (e) {
+        //         console.log('we have some errors');
+        //     }
 
-        },
+        // },
 
         editItem: async function (item) {
 
-            this.editedIndex = this.tagInfoList.indexOf(item)
+            this.editedIndex = this.catInfoList.indexOf(item)
             const {
                 data
             } = await axios.get(`/wp-json/wp/v2/categories/${this.tagInfoList[this.editedIndex].id}`, {
@@ -265,8 +264,11 @@ export default {
         },
     },
     created() {
-        this.getUsers();
+        // this.getUsers();
         //this.initialize()
+         this.$store.dispatch('getAllCategories').then(()=>{
+        this.catInfoList =  this.$store.state.all_the_categories
+    })
     },
 }
 </script>

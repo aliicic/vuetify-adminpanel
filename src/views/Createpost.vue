@@ -2,7 +2,7 @@
 <v-container>
     <v-row>
         <v-col cols="12" sm="9">
-            <v-card class="ma-10 pa-5 ml-md-0" :loading="loading">
+            <v-card class="ma-10 pa-5 mx-0 ml-md-0" :loading="loading">
                 <v-form ref="form" v-model="valid" lazy-validation>
                     <v-text-field v-model="postContent.title.raw" :counter="10" :rules="nameRules" label="عنوان پست" required></v-text-field>
                     <!-- <v-textarea solo name="input-7-4" label="متن پست" v-model="postContent.content.raw"></v-textarea> -->

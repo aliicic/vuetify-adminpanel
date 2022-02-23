@@ -1,5 +1,5 @@
 <template>
-<v-data-table :headers="headers" :items="tagInfoList" sort-by="calories" class="elevation-1" :loading="loading" loading-text="لطفا منتظر بمانید">
+<v-data-table :headers="headers" :items="tagInfoList" sort-by="calories" class="elevation-1" :loading="tagInfoList==''" loading-text="لطفا منتظر بمانید">
     <template v-slot:top>
         <v-toolbar flat>
             <v-toolbar-title>برچسب ها</v-toolbar-title>
@@ -62,7 +62,7 @@
         </v-icon>
     </template>
     <template v-slot:item.email="{ item }">
-        {{ item.email }}
+        {{ item.email }} 
     </template>
     <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">
@@ -122,29 +122,28 @@ export default {
     },
     methods: {
 
-        getUsers: async function () {
+        // getUsers: async function () {
 
-            try {
+        //     try {
 
-                const {
-                    data
-                } = await axios.get('/wp-json/wp/v2/tags', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                    },
-                    params: {
-                        'context': 'edit',
-                        'per_page': 100
-                    }
-                })
-                this.tagInfoList.push(...data)
-                console.log(data, 'is tags informations');
-                this.loading = false
-            } catch (e) {
-                console.log('we have some errors');
-            }
+        //         const {
+        //             data
+        //         } = await axios.get('/wp-json/wp/v2/tags', {
+        //             headers: {
+        //                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+        //             },
+        //             params: {
+        //                 'context': 'edit',
+        //                 'per_page': 100
+        //             }
+        //         })
+        //         this.tagInfoList.push(...data)
+        //         this.loading = false
+        //     } catch (e) {
+        //         console.log('we have some errors');
+        //     }
 
-        },
+        // },
 
         editItem: async function (item) {
 
@@ -264,9 +263,12 @@ export default {
             val || this.closeDelete()
         },
     },
-    created() {
-        this.getUsers();
-        //this.initialize()
+    async created() {
+    
+    this.$store.dispatch('getAllTags').then(()=>{
+        this.tagInfoList =  this.$store.state.all_the_tags
+    })
+    
     },
 }
 </script>
