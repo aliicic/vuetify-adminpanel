@@ -1,5 +1,5 @@
 <template>
-<v-data-table :headers="headers" :items="usersInfoList" sort-by="calories" class="elevation-1" :loading="loading" loading-text="لطفا منتظر بمانید">
+<v-data-table :headers="headers" :items="usersInfoList" sort-by="calories" class="elevation-1" :loading="usersInfoList==''" loading-text="لطفا منتظر بمانید">
     <template v-slot:top>
         <v-toolbar flat>
             <v-toolbar-title>کاربران</v-toolbar-title>
@@ -142,28 +142,28 @@ export default {
     },
     methods: {
 
-        getUsers: async function () {
+        // getUsers: async function () {
 
-            try {
+        //     try {
 
-                const {
-                    data
-                } = await axios.get('/wp-json/wp/v2/users', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                    },
-                    params: {
-                        'context': 'edit'
-                    }
-                })
-                this.usersInfoList.push(...data)
-                console.log(data, 'is user informations');
-                this.loading = false
-            } catch (e) {
-                console.log('we have some errors');
-            }
+        //         const {
+        //             data
+        //         } = await axios.get('/wp-json/wp/v2/users', {
+        //             headers: {
+        //                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+        //             },
+        //             params: {
+        //                 'context': 'edit'
+        //             }
+        //         })
+        //         this.usersInfoList.push(...data)
+        //         console.log(data, 'is user informations');
+        //         this.loading = false
+        //     } catch (e) {
+        //         console.log('we have some errors');
+        //     }
 
-        },
+        // },
 
         editItem: async function (item) {
 
@@ -305,9 +305,12 @@ export default {
             val || this.closeDelete()
         },
     },
-    created() {
-        this.getUsers();
+   async created() {
+       // this.getUsers();
         //this.initialize()
+        this.$store.dispatch('getAllUsers').then(()=>{
+        this.usersInfoList =  this.$store.state.all_users
+    })
     },
 }
 </script>

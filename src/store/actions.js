@@ -75,6 +75,25 @@ export default {
             }
 
         },
+        getAllUsers: async function ({ commit }) {
+          
+         try {
+
+                const {
+                    data
+                } = await axios.get('/wp-json/wp/v2/users', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    },
+                    params: {
+                        'context': 'edit'
+                    }
+                })
+                commit('SET_ALL_USERS',data)
+            } catch (e) {
+                console.log('we have some errors');
+            }
+        }
 
         // getTheCategories(context,payload) {
                 

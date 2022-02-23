@@ -8,10 +8,10 @@
 
         <v-spacer></v-spacer>
         <span>
-            {{ currentDateTime() }}
+            {{ time }}
         </span>
 
-        <v-btn icon>
+        <!-- <v-btn icon>
             <v-icon>mdi-heart</v-icon>
         </v-btn>
 
@@ -31,7 +31,7 @@
                     <v-list-item-title>Option {{ n }}</v-list-item-title>
                 </v-list-item>
             </v-list>
-        </v-menu>
+        </v-menu> -->
 
     </v-app-bar>
     <v-navigation-drawer app right v-model="drawer">
@@ -164,7 +164,8 @@ export default {
         username: window.localStorage.getItem('displayname'),
         email: window.localStorage.getItem('email'),
         success: false,
-        error: false
+        error: false,
+        time : null
     }),
 
     methods: {
@@ -177,15 +178,27 @@ export default {
             })
 
         },
-        currentDateTime(item) {
-            return moment(item).locale('fa').format(' h:mm:ss a , YYYY/M/D');
+        currentDateTime() {
+           
+          this.time =  moment().locale('fa').format(' h:mm:ss a , YYYY/M/D') 
+          
+             
+          // return         
         },
 
-    }
-    // beforeRouteEnter(to, from, next) {
 
-    //   next({ path: '/' })
-    // }
+    },
+    created(){
+        // setInterval( function(){ 
+        //     this.currentDateTime() } 
+        //       , 1000) 
+              
+       this.currentDateTime()       
+       
+             setInterval(  this.currentDateTime  , 1000) 
+   
+    }
+ 
 }
 </script>
 
