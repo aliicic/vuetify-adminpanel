@@ -1,7 +1,10 @@
 <template>
 <v-app>
 
-    <v-app-bar color="deep-purple accent-4" dense dark app>
+    <v-app-bar 
+    color="deep-purple accent-4"
+    
+     dense dark app>
         <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
 
         <v-toolbar-title>پنل ادمین</v-toolbar-title>
@@ -141,10 +144,6 @@
         <v-alert v-if="this.$store.state.alert_message.text" transition="scale-transition" dense :type="this.$store.state.alert_message.type">
             {{this.$store.state.alert_message.text}}
         </v-alert>
-        <!-- <v-alert :value="error" dismissible transition="scale-transition"  dense type="error">
-      I'm a success alert.
-    </v-alert> -->
-
         <router-view />
     </v-main>
     <v-footer padless>
