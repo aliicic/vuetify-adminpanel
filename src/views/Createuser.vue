@@ -105,7 +105,10 @@ export default {
 
                 console.log(data);
                 this.$refs.form.reset()
+                 this.$store.commit('SET_MSG' , {text : 'کاربر با موفقیت ذخیره شد ' , type : 'success'})
             } catch (e) {
+             
+                this.$store.commit('SET_MSG' , {text : e.response.data.message , type : 'error'})
 
             }
 

@@ -1,5 +1,5 @@
 <template>
-<v-data-table :headers="headers" :items="usersInfoList" sort-by="calories" class="elevation-1" :loading="usersInfoList==''" loading-text="لطفا منتظر بمانید">
+<v-data-table :headers="headers" :items="usersInfoList" sort-by="calories" class="elevation-1">
     <template v-slot:top>
         <v-toolbar flat>
             <v-toolbar-title>کاربران</v-toolbar-title>
@@ -76,11 +76,7 @@
     <template v-slot:item.email="{ item }">
         {{ item.email }}
     </template>
-    <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">
-            Reset
-        </v-btn>
-    </template>
+
 </v-data-table>
 </template>
 

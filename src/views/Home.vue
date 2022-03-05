@@ -132,7 +132,7 @@ export default {
 
     },
     data: () => ({
-        userCounts: '',
+        userCounts: [1,2],
         postInfoList : [],
         value: [
             423,
@@ -207,11 +207,18 @@ export default {
     },
 
     created() {
-        this.$store.dispatch('getPosts')
+        this.$store.dispatch('getPosts').then( ()=> {
+             
         this.postInfoList = this.$store.state.postInfoList
+
+        } )
+     
         
-        this.$store.dispatch('getAllUsers')
-        this.userCounts = this.$store.state.all_users
+        // this.$store.dispatch('getAllUsers').then ( ()=> {
+        //    this.userCounts = this.$store.state.all_users
+        // })
+    
+  
     }
 }
 </script>

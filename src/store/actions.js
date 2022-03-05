@@ -91,7 +91,11 @@ export default {
                 })
                 commit('SET_ALL_USERS',data)
             } catch (e) {
-                console.log('we have some errors');
+                    
+                    commit('SET_MSG', {
+                    text: e.response.data.message,
+                    type: 'error'
+                })
             }
         }
 

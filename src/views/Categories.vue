@@ -42,7 +42,7 @@
             </v-dialog>
             <v-dialog v-model="dialogDelete" max-width="500px">
                 <v-card>
-                    <v-card-title class="text-h5">واقعا میخواید این کاربر رو پاک کنید ؟</v-card-title>
+                    <v-card-title class="text-h5">واقعا میخواید این دسته بندی رو پاک کنید ؟</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="blue darken-1" text @click="closeDelete">نه بیخیال</v-btn>
@@ -150,7 +150,7 @@ export default {
             this.editedIndex = this.catInfoList.indexOf(item)
             const {
                 data
-            } = await axios.get(`/wp-json/wp/v2/categories/${this.tagInfoList[this.editedIndex].id}`, {
+            } = await axios.get(`/wp-json/wp/v2/categories/${this.catInfoList[this.editedIndex].id}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                 },
@@ -166,7 +166,7 @@ export default {
 
         deleteItem(item) {
             console.log(item.id);
-            this.editedIndex = this.tagInfoList.indexOf(item)
+            this.editedIndex = this.catInfoList.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
 
@@ -174,7 +174,7 @@ export default {
 
         deleteItemConfirm() {
 
-            axios.delete(`/wp-json/wp/v2/categories/${this.tagInfoList[this.editedIndex].id}`, {
+            axios.delete(`/wp-json/wp/v2/categories/${this.catInfoList[this.editedIndex].id}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                 },
@@ -182,7 +182,7 @@ export default {
                     'force': true,
                 }
             })
-            this.tagInfoList.splice(this.editedIndex, 1)
+            this.catInfoList.splice(this.editedIndex, 1)
             this.closeDelete()
         },
         close() {
@@ -207,7 +207,7 @@ export default {
 
                     const {
                         data
-                    } = await axios.put(`/wp-json/wp/v2/categories/${this.tagInfoList[this.editedIndex].id}`,  this.editedItem ,
+                    } = await axios.put(`/wp-json/wp/v2/categories/${this.catInfoList[this.editedIndex].id}`,  this.editedItem ,
                         {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
@@ -219,7 +219,7 @@ export default {
 
                     console.log(data);
                   //  this.$refs.form.reset()
-                    Object.assign(this.tagInfoList[this.editedIndex], this.editedItem)
+                    Object.assign(this.catInfoList[this.editedIndex], this.editedItem)
                 } catch (e) {
 
                 }
@@ -241,7 +241,7 @@ export default {
 
                     console.log(data);
                     //this.$refs.form.reset()
-                     this.tagInfoList.push(this.editedItem)
+                     this.catInfoList.push(this.editedItem)
                 } catch (e) {
 
                 }
