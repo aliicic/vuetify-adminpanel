@@ -1,10 +1,6 @@
 <template>
 <v-app>
-
-    <v-app-bar 
-    color="deep-purple accent-4"
-    
-     dense dark app>
+    <v-app-bar color="deep-purple accent-4" dense dark app>
         <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
 
         <v-toolbar-title>پنل ادمین</v-toolbar-title>
@@ -35,7 +31,6 @@
                 </v-list-item>
             </v-list>
         </v-menu> -->
-
     </v-app-bar>
     <v-navigation-drawer app right v-model="drawer">
         <template #prepend>
@@ -45,13 +40,12 @@
                 </v-list-item-avatar>
                 <v-list-item-content>
                     <v-list-item-title>
-                        {{username}}
+                        {{ username }}
                     </v-list-item-title>
                     <v-list-item-subtitle>
-                        {{email}}
+                        {{ email }}
                     </v-list-item-subtitle>
                 </v-list-item-content>
-
             </v-list-item>
         </template>
         <v-list nav dense>
@@ -64,7 +58,7 @@
                         <v-list-item-title>داشبورد</v-list-item-title>
                     </v-list-item>
                 </router-link>
-                <router-link :to="{ name :'Userinfo'}">
+                <router-link :to="{ name: 'Userinfo' }">
                     <v-list-item>
                         <v-list-item-icon>
                             <v-icon>mdi-account</v-icon>
@@ -73,7 +67,7 @@
                     </v-list-item>
                 </router-link>
 
-                <router-link :to="{ name :'Users'}">
+                <router-link :to="{ name: 'Users' }">
                     <v-list-group :value="false" prepend-icon="mdi-account-multiple">
                         <template v-slot:activator>
                             <v-list-item-title>کاربران</v-list-item-title>
@@ -90,7 +84,6 @@
                 </router-link>
                 <router-link to="/dashboard/posts">
                     <v-list-group :value="false" prepend-icon="mdi-file-multiple">
-
                         <template v-slot:activator>
                             <v-list-item-title>پست ها</v-list-item-title>
                         </template>
@@ -131,74 +124,86 @@
         </v-list>
 
         <template #append>
-            <div class=" mx-4 ">
+            <div class="mx-4">
+                <v-dialog v-model="dialogExit" max-width="500px" transition="dialog-bottom-transition">
+                    <v-card>
+                        <v-toolbar color="primary" dark>خروج</v-toolbar>
+                        <v-card-title class="text-h6 p-5">قصد خروج از پنل مدیریت را دارید ؟</v-card-title>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="blue darken-1" text @click="closeDialog">نه بیخیال</v-btn>
+                            <v-btn color="blue darken-1" text @click="exitConfirm">صد در صد</v-btn>
+                            <v-spacer></v-spacer>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
                 <v-btn block class="mb-2" color="grey darken-4" dark @click="deletetoken">
                     خروج
                 </v-btn>
             </div>
-
         </template>
-
     </v-navigation-drawer>
     <v-main>
         <v-alert v-if="this.$store.state.alert_message.text" transition="scale-transition" dense :type="this.$store.state.alert_message.type">
-            {{this.$store.state.alert_message.text}}
+            {{ this.$store.state.alert_message.text }}
         </v-alert>
         <router-view />
     </v-main>
     <v-footer padless>
         <v-col class="text-center" cols="12">
-            {{ new Date().getFullYear() }} — <strong>vuetify wordpress admin panel ;)</strong>
+            {{ new Date().getFullYear() }} —
+            <strong>vuetify wordpress admin panel ;)</strong>
         </v-col>
     </v-footer>
 </v-app>
 </template>
 
 <script>
-var moment = require('jalali-moment')
+var moment = require("jalali-moment");
 export default {
     data: () => ({
         drawer: true,
         group: null,
-        username: window.localStorage.getItem('displayname'),
-        email: window.localStorage.getItem('email'),
+        username: window.localStorage.getItem("displayname"),
+        email: window.localStorage.getItem("email"),
         success: false,
         error: false,
-        time : null
+        time: null,
+        dialogExit: false,
     }),
 
     methods: {
-
         deletetoken() {
 
-            localStorage.removeItem('userToken')
-            this.$router.push({
-                name: "Login"
-            })
+            this.dialogExit = true
+        },
+        closeDialog() {
 
+            this.dialogExit = false
+        },
+        exitConfirm() {
+
+            localStorage.removeItem("userToken");
+            this.$router.push({
+                name: "Login",
+            });
         },
         currentDateTime() {
-           
-          this.time =  moment().locale('fa').format(' h:mm:ss a , YYYY/M/D') 
-          
-             
-          // return         
+            this.time = moment().locale("fa").format(" h:mm:ss a , YYYY/M/D");
+
+            // return
         },
-
-
     },
-    created(){
-        // setInterval( function(){ 
-        //     this.currentDateTime() } 
-        //       , 1000) 
-              
-       this.currentDateTime()       
-       
-             setInterval(  this.currentDateTime  , 1000) 
-   
-    }
- 
-}
+    created() {
+        // setInterval( function(){
+        //     this.currentDateTime() }
+        //       , 1000)
+
+        this.currentDateTime();
+
+        setInterval(this.currentDateTime, 1000);
+    },
+};
 </script>
 
 <style>

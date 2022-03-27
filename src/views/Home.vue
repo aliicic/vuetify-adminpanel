@@ -85,9 +85,7 @@
         <v-col cols="6">
             <v-card class="pa-4">
                 <h4>آخرین مطالب سایت</h4>
-                <v-data-table
-                 dense hide-default-footer hide-default-header max="3"
-                 :headers="headers" :items="postInfoList" sort-by="calories" class="elevation-1" :loading="postInfoList ==''" loading-text="لطفا منتظر بمانید">
+                <v-data-table dense hide-default-footer hide-default-header max="3" :headers="headers" :items="postInfoList" sort-by="calories" class="elevation-1" :loading="postInfoList ==''" loading-text="لطفا منتظر بمانید">
 
                 </v-data-table>
             </v-card>
@@ -132,8 +130,8 @@ export default {
 
     },
     data: () => ({
-        userCounts: [1,2],
-        postInfoList : [],
+        userCounts: [1, 2],
+        postInfoList: [],
         value: [
             423,
             446,
@@ -143,20 +141,20 @@ export default {
             610,
             760,
         ],
-                    headers: [{
-                    text: 'نام',
-                    align: 'start',
-                    sortable: false,
-                    value: 'title.raw',
-                },
-                {
-                    text: 'نام نویسنده',
-                    value: 'uagb_author_info.display_name'
-                },
+        exitdialog : false,
+        headers: [{
+                text: 'نام',
+                align: 'start',
+                sortable: false,
+                value: 'title.raw',
+            },
+            {
+                text: 'نام نویسنده',
+                value: 'uagb_author_info.display_name'
+            },
 
-            ],
+        ],
         date: window.localStorage.getItem('date'),
-        btnloading: false,
         postContent: {
             title: {
                 raw: '',
@@ -207,18 +205,16 @@ export default {
     },
 
     created() {
-        this.$store.dispatch('getPosts').then( ()=> {
-             
-        this.postInfoList = this.$store.state.postInfoList
+        this.$store.dispatch('getPosts').then(() => {
 
-        } )
-     
-        
+            this.postInfoList = this.$store.state.postInfoList
+
+        })
+
         // this.$store.dispatch('getAllUsers').then ( ()=> {
         //    this.userCounts = this.$store.state.all_users
         // })
-    
-  
+
     }
 }
 </script>

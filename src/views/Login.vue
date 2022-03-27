@@ -4,6 +4,7 @@
         <v-list-item-content>
             <div class="text-overline mb-4">
                 صفحه ورود
+                <img class="first-logo" src="../assets/mix.jpg" alt="">
             </div>
 
         </v-list-item-content>
@@ -12,7 +13,7 @@
     <v-form v-model="validfrom" ref="form">
         <v-col cols="12">
             <v-text-field label="نام کاربری یا ایمیل" outlined v-model="form.username" dense required :rules="req"></v-text-field>
-            <v-text-field outlined required v-model="form.password" :type="showPassword ? 'text' : 'password' " label="رمز عبور" :prepend-inner-icon="showPassword?'mdi-eye' : 'mdi-eye-off'" @click:prepend-inner="showPassword = !showPassword" :rules="req"></v-text-field>
+            <v-text-field outlined required dense v-model="form.password" :type="showPassword ?  'text' : 'password' " label="رمز عبور" :prepend-inner-icon="showPassword?'mdi-eye' : 'mdi-eye-off'" @click:prepend-inner="showPassword = !showPassword" :rules="req"></v-text-field>
         </v-col>
     </v-form>
 
@@ -30,7 +31,7 @@
     </v-alert>
     <v-alert v-if="errorText=='success'" color="green" type="success">
 
-        خوش اومدی دوست عزیزم
+      در خواست موفق
     </v-alert>
 </v-card>
 </template>
@@ -145,5 +146,9 @@ export default {
 <style>
 .v-text-field__slot {
     direction: ltr !important;
+}
+.first-logo{
+    width: 50%;
+    margin: 0 auto;
 }
 </style>
