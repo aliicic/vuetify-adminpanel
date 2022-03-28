@@ -4,14 +4,14 @@
         <v-col>
             <v-card class="ma-10 pa-5">
                 <v-form ref="form" v-model="valid" lazy-validation>
-                    <v-text-field v-model="userInfo.username" :counter="10" :rules="nameRules" label="نام کاربری" disabled></v-text-field>
+                    <v-text-field v-model="userInfo.username" :counter="20" :rules="nameRules" label="نام کاربری" disabled></v-text-field>
 
                     <v-text-field v-model="userInfo.email" :rules="emailRules" label="آدرس ایمیل" required></v-text-field>
 
-                    <v-text-field v-model="userInfo.first_name" :counter="10" :rules="nameRules" label="نام " required></v-text-field>
-                    <v-text-field v-model="userInfo.last_name" :counter="10" :rules="nameRules" label="نام خانوادگی " required></v-text-field>
+                    <v-text-field v-model="userInfo.first_name" :counter="20" :rules="nameRules" label="نام " required></v-text-field>
+                    <v-text-field v-model="userInfo.last_name" :counter="20" :rules="nameRules" label="نام خانوادگی " required></v-text-field>
 
-                    <v-text-field v-model="userInfo.nickname" :counter="10" :rules="nameRules" label="نمایشی" required></v-text-field>
+                    <v-text-field v-model="userInfo.nickname" :counter="20" :rules="nameRules" label="نمایشی" required></v-text-field>
 
                     <v-text-field v-model="userInfo.password" :append-icon="showPassWord ? 'mdi-eye' : 'mdi-eye-off'" :rules="[passWordrules.min]" :type="showPassWord ? 'text' : 'password'" name="input-10-1" label="میتوانید آن را خالی بگذارید" hint="حداقل 8 کاراکتر داشته باشد" counter @click:append="showPassWord = !showPassWord"></v-text-field>
 
