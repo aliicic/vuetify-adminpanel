@@ -1,5 +1,5 @@
 <template>
-<v-data-table :headers="headers" :items="usersInfoList" sort-by="calories" class="elevation-1">
+<v-data-table :headers="headers" :items="usersInfoList" sort-by="calories" :loading="usersInfoList ==''" loading-text="لطفا منتظر بمانید" class="elevation-1">
     <template v-slot:top>
         <v-toolbar flat>
             <v-toolbar-title>کاربران</v-toolbar-title>
@@ -292,6 +292,7 @@ export default {
         formTitle() {
             return this.editedIndex === -1 ? 'اضافه کردن کاربر جدید' : 'ویرایش اطلاعات کاربر'
         },
+        
     },
     watch: {
         dialog(val) {

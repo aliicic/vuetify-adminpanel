@@ -1,7 +1,7 @@
 <template>
 <v-app>
     <v-app-bar color="deep-purple accent-4" dense dark app>
-        <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon class="nav-icon"  @click="drawer=true"></v-app-bar-nav-icon>
 
         <v-toolbar-title>پنل ادمین</v-toolbar-title>
 
@@ -34,8 +34,8 @@
     </v-app-bar>
     <v-navigation-drawer app right v-model="drawer">
         <template #prepend>
-            <v-list-item>
-                <v-list-item-avatar>
+            <v-list-item class="bg-user-info">
+                <v-list-item-avatar >
                     <v-img src="https://avatars.githubusercontent.com/u/19605594?v=4" />
                 </v-list-item-avatar>
                 <v-list-item-content>
@@ -137,7 +137,7 @@
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-                <v-btn block class="mb-2" color="grey darken-4" dark @click="deletetoken">
+                <v-btn block class="mb-2" color="deep-purple" dark @click="deletetoken">
                     خروج
                 </v-btn>
             </div>
@@ -194,6 +194,14 @@ export default {
             // return
         },
     },
+    computed : {
+
+    // mobile(){
+    //     if (window.innerWidth <= '992px')
+    //     return true
+    // }
+
+    },
     created() {
         // setInterval( function(){
         //     this.currentDateTime() }
@@ -209,5 +217,14 @@ export default {
 <style>
 a {
     text-decoration: none;
+}
+/* .bg-user-info{
+    background: #6200ea;
+    color:white!important;
+} */
+@media(min-width : 992px){
+    .nav-icon{
+        display: none!important;
+    }
 }
 </style>

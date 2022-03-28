@@ -38,7 +38,7 @@ export default {
         showPassWord: false,
 
         nameRules: [
-            v => !!v || 'Name is required',
+            v => !!v || 'پر کردن این فیلد الزامی است ',
             v => (v && v.length <= 10) || 'Name must be less than 10 characters',
         ],
         emailRules: [
@@ -49,7 +49,7 @@ export default {
         passWordrules: {
             required: value => !!value || 'Required.',
             min: v => v.length >= 8 || 'Min 8 characters',
-            emailMatch: () => (`The email and password you entered don't match`),
+            emailMatch: () => (`The email you entered don't match`),
         },
 
         userInfo: {
