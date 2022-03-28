@@ -211,9 +211,7 @@ export default {
 
         })
 
-        // this.$store.dispatch('getAllUsers').then ( ()=> {
-        //    this.userCounts = this.$store.state.all_users
-        // })
+        this.$store.dispatch('getAllUsers')
 
     }
 }

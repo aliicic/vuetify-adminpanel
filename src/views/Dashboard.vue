@@ -147,7 +147,9 @@
         <v-alert v-if="this.$store.state.alert_message.text" transition="scale-transition" dense :type="this.$store.state.alert_message.type">
             {{ this.$store.state.alert_message.text }}
         </v-alert>
+         <transition name="fade" mode="out-in">
         <router-view />
+        </transition>
     </v-main>
     <v-footer padless>
         <v-col class="text-center" cols="12">

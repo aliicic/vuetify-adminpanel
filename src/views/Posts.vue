@@ -112,6 +112,7 @@ export default {
         postInfoList() {
             return this.$store.state.postInfoList
         },
+
         //   ...mapState([postInfoList])
 
     },

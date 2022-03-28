@@ -124,7 +124,7 @@ export default {
                         name: "Dashboard"
                     })
 
-                }, 2000)
+                }, 1000)
             }
         },
 

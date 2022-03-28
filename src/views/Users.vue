@@ -115,7 +115,7 @@ export default {
                     value: 'actions'
                 },
             ],
-            usersInfoList: [],
+            // usersInfoList: [],
             editedIndex: -1,
             editedItem: {
                 name: '',
@@ -137,29 +137,6 @@ export default {
         }
     },
     methods: {
-
-        // getUsers: async function () {
-
-        //     try {
-
-        //         const {
-        //             data
-        //         } = await axios.get('/wp-json/wp/v2/users', {
-        //             headers: {
-        //                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-        //             },
-        //             params: {
-        //                 'context': 'edit'
-        //             }
-        //         })
-        //         this.usersInfoList.push(...data)
-        //         console.log(data, 'is user informations');
-        //         this.loading = false
-        //     } catch (e) {
-        //         console.log('we have some errors');
-        //     }
-
-        // },
 
         editItem: async function (item) {
 
@@ -292,6 +269,9 @@ export default {
         formTitle() {
             return this.editedIndex === -1 ? 'اضافه کردن کاربر جدید' : 'ویرایش اطلاعات کاربر'
         },
+        usersInfoList() {
+            return this.$store.state.all_users
+        },
         
     },
     watch: {
@@ -303,11 +283,10 @@ export default {
         },
     },
    async created() {
-       // this.getUsers();
-        //this.initialize()
-        this.$store.dispatch('getAllUsers').then(()=>{
-        this.usersInfoList =  this.$store.state.all_users
-    })
+
+        this.$store.dispatch('getAllUsers')
+       
+    
     },
 }
 </script>
